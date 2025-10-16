@@ -716,6 +716,30 @@
             </div>
         </div>
         
+        <!-- Modal de Login Sede -->
+        <div class="login-modal" id="sede-login-modal">
+            <div class="login-form">
+                <h2>Acceso a Sede</h2>
+                <div class="form-group">
+                    <label for="sede-username">Usuario</label>
+                    <input type="text" id="sede-username" placeholder="Ingrese usuario de sede">
+                </div>
+                <div class="form-group">
+                    <label for="sede-password">Contraseña</label>
+                    <input type="password" id="sede-password" placeholder="Ingrese contraseña">
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button id="login-sede" class="btn-secondary" style="flex: 1;">Ingresar</button>
+                    <button id="cancel-sede-login" class="btn-warning" style="flex: 1;">Cancelar</button>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; font-size: 12px;">
+                    <strong>Credenciales de prueba:</strong><br>
+                    Usuario: arequipa<br>
+                    Contraseña: arequipa123
+                </div>
+            </div>
+        </div>
+        
         <!-- Pantalla de Login (visible inicialmente) -->
         <div class="sede-selector" id="login-screen">
             <h2>Acceso al Sistema</h2>
@@ -1345,7 +1369,7 @@
         </div>
     </div>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
         // Variables globales
         let currentSede = '';
@@ -1377,6 +1401,59 @@
         const adminCredentials = {
             username: 'admin',
             password: 'admin123'
+        };
+        
+        // Credenciales por sede
+        const sedeCredentials = {
+            'AREQUIPA': { username: 'arequipa', password: 'arequipa123' },
+            'BARRANCO': { username: 'barranco', password: 'barranco123' },
+            'BELISARIO': { username: 'belisario', password: 'belisario123' },
+            'BELLAVISTA': { username: 'bellavista', password: 'bellavista123' },
+            'BELLIDO': { username: 'bellido', password: 'bellido123' },
+            'CAJAMARCA': { username: 'cajamarca', password: 'cajamarca123' },
+            'CALCA': { username: 'calca', password: 'calca123' },
+            'CAMPOY': { username: 'campoy', password: 'campoy123' },
+            'CANTA CALLAO': { username: 'cantacallao', password: 'cantacallao123' },
+            'CARABAYLLO': { username: 'carabayllo', password: 'carabayllo123' },
+            'CHACLACAYO': { username: 'chaclacayo', password: 'chaclacayo123' },
+            'CHORRILLOS': { username: 'chorrillos', password: 'chorrillos123' },
+            'CIPRESES': { username: 'cipreses', password: 'cipreses123' },
+            'CUBA': { username: 'cuba', password: 'cuba123' },
+            'EL AGUSTINO': { username: 'elagustino', password: 'elagustino123' },
+            'EL RETABLO': { username: 'elretablo', password: 'elretablo123' },
+            'EL ROSARIO': { username: 'elrosario', password: 'elrosario123' },
+            'ELIO': { username: 'elio', password: 'elio123' },
+            'HUAYCAN': { username: 'huaycan', password: 'huaycan123' },
+            'HUANCAYO': { username: 'huancayo', password: 'huancayo123' },
+            'HUARAL': { username: 'huaral', password: 'huaral123' },
+            'ICA': { username: 'ica', password: 'ica123' },
+            'INGENIEROS': { username: 'ingenieros', password: 'ingenieros123' },
+            'JAVIER PRADO': { username: 'javierprado', password: 'javierprado123' },
+            'JULIACA': { username: 'juliaca', password: 'juliaca123' },
+            'LA VICTORIA': { username: 'lavictoria', password: 'lavictoria123' },
+            'LAS PALMERAS': { username: 'laspalmeras', password: 'laspalmeras123' },
+            'LINCE': { username: 'lince', password: 'lince123' },
+            'LOS COCALENOS': { username: 'loscocalenos', password: 'loscocalenos123' },
+            'LURIN': { username: 'lurin', password: 'lurin123' },
+            'MIGUEL IGLESIAS': { username: 'migueliglesias', password: 'migueliglesias123' },
+            'MONTERRICO': { username: 'monterrico', password: 'monterrico123' },
+            'MONTESSORI': { username: 'montessori', password: 'montessori123' },
+            'NARANJAL': { username: 'naranjal', password: 'naranjal123' },
+            'PISCO': { username: 'pisco', password: 'pisco123' },
+            'PUCALLPA': { username: 'pucallpa', password: 'pucallpa123' },
+            'PUEBLO LIBRE': { username: 'pueblolibre', password: 'pueblolibre123' },
+            'PUENTE PIEDRA': { username: 'puentepiedra', password: 'puentepiedra123' },
+            'QUILCA': { username: 'quilca', password: 'quilca123' },
+            'SALAMANCA': { username: 'salamanca', password: 'salamanca123' },
+            'SAN CARLOS': { username: 'sancarlos', password: 'sancarlos123' },
+            'SAN LUIS': { username: 'sanluis', password: 'sanluis123' },
+            'SAN MIGUEL': { username: 'sanmiguel', password: 'sanmiguel123' },
+            'SANTA ANITA': { username: 'santaanita', password: 'santaanita123' },
+            'SORIA': { username: 'soria', password: 'soria123' },
+            'TARMA': { username: 'tarma', password: 'tarma123' },
+            'VENTANILLA': { username: 'ventanilla', password: 'ventanilla123' },
+            'VILLA EL SALVADOR': { username: 'villanueva', password: 'villanueva123' },
+            'VILLA SOL': { username: 'villasol', password: 'villasol123' }
         };
         
         // Lista de sedes actualizada
@@ -1485,6 +1562,11 @@
             document.getElementById('admin-login').addEventListener('click', showAdminLogin);
             document.getElementById('login-admin').addEventListener('click', loginAdmin);
             document.getElementById('cancel-login').addEventListener('click', hideAdminLogin);
+            
+            // Login sede
+            document.getElementById('login-sede').addEventListener('click', loginSede);
+            document.getElementById('cancel-sede-login').addEventListener('click', hideSedeLogin);
+            
             document.getElementById('logout').addEventListener('click', logout);
             
             // Exportación vista consolidada
@@ -1626,6 +1708,17 @@
             document.getElementById('admin-password').value = '';
         }
         
+        function showSedeLogin() {
+            document.getElementById('sede-selector').style.display = 'none';
+            document.getElementById('sede-login-modal').style.display = 'flex';
+        }
+        
+        function hideSedeLogin() {
+            document.getElementById('sede-login-modal').style.display = 'none';
+            document.getElementById('sede-username').value = '';
+            document.getElementById('sede-password').value = '';
+        }
+        
         function loginAdmin() {
             const username = document.getElementById('admin-username').value;
             const password = document.getElementById('admin-password').value;
@@ -1650,6 +1743,66 @@
                 setupConsolidatedView();
             } else {
                 showNotification('Credenciales incorrectas', 'error');
+            }
+        }
+        
+        function loginSede() {
+            const username = document.getElementById('sede-username').value;
+            const password = document.getElementById('sede-password').value;
+            const selectedSede = document.getElementById('sede').value;
+            
+            if (!selectedSede) {
+                showNotification('Por favor, seleccione una sede', 'error');
+                return;
+            }
+            
+            const sedeCredential = sedeCredentials[selectedSede];
+            
+            if (sedeCredential && username === sedeCredential.username && password === sedeCredential.password) {
+                currentSede = selectedSede;
+                localStorage.setItem('currentSede', currentSede);
+                
+                console.log("Iniciando carga de datos para sede:", currentSede);
+                
+                // Cargar datos de la sede
+                loadSedeData();
+                
+                // Configurar vista individual
+                setupSedeIndividualView();
+                
+                // Actualizar información de la sede
+                updateSedeInfo();
+                
+                // Mostrar elementos correctamente
+                hideSedeLogin();
+                document.getElementById('sede-info').style.display = 'block';
+                document.getElementById('main-system').style.display = 'block';
+                document.getElementById('user-profile').style.display = 'flex';
+                
+                // Restaurar elementos a estado normal
+                document.getElementById('sede-info').classList.remove('consolidated-info');
+                document.getElementById('config-consolidated-warning').style.display = 'none';
+                document.getElementById('order-consolidated-warning').style.display = 'none';
+                document.getElementById('students-consolidated-warning').style.display = 'none';
+                document.getElementById('csv-consolidated-warning').style.display = 'none';
+                
+                // Habilitar botones de guardar
+                document.getElementById('save-config').disabled = false;
+                document.getElementById('save-order').disabled = false;
+                document.getElementById('save-thresholds').disabled = false;
+                document.getElementById('student-form').querySelector('button').disabled = false;
+                document.getElementById('import-csv').disabled = false;
+                
+                showNotification(`Bienvenido a la sede ${getSedeName(currentSede)} - Ya puede cargar notas`, 'success');
+                
+                // Forzar actualización de la interfaz
+                setTimeout(() => {
+                    renderStudents();
+                    updateFilterOptions();
+                    updateResults();
+                }, 100);
+            } else {
+                showNotification('Credenciales incorrectas para esta sede', 'error');
             }
         }
         
@@ -1791,102 +1944,61 @@
         }
         
         function enterSystem() {
-    const sedeSelect = document.getElementById('sede');
-    const selectedSede = sedeSelect.value;
-    
-    if (!selectedSede) {
-        showNotification('Por favor, seleccione una sede', 'error');
-        return;
-    }
-    
-    currentSede = selectedSede;
-    console.log("Sede seleccionada:", currentSede);
-    
-    if (currentSede === 'todas_las_sedes') {
-        // Modo vista consolidada
-        isConsolidatedView = true;
-        document.getElementById('user-info').textContent = 'Usuario: Vista Consolidada';
-        document.getElementById('consolidated-panel').style.display = 'block';
-        document.getElementById('main-header').classList.add('consolidated-header');
-        document.getElementById('header-subtitle').textContent = 'Vista Consolidada - Todas las Sedes';
-        document.getElementById('sede-title').textContent = 'Vista Actual:';
-        document.getElementById('current-sede').textContent = 'Todas las Sedes (Solo Lectura)';
-        document.getElementById('sede-info').classList.add('consolidated-info');
-        
-        // Mostrar advertencias en las pestañas de edición
-        document.getElementById('config-consolidated-warning').style.display = 'block';
-        document.getElementById('order-consolidated-warning').style.display = 'block';
-        document.getElementById('students-consolidated-warning').style.display = 'block';
-        document.getElementById('csv-consolidated-warning').style.display = 'block';
-        
-        // Deshabilitar botones de guardar
-        document.getElementById('save-config').disabled = true;
-        document.getElementById('save-order').disabled = true;
-        document.getElementById('save-thresholds').disabled = true;
-        document.getElementById('student-form').querySelector('button').disabled = true;
-        document.getElementById('import-csv').disabled = true;
-        
-        // Configurar vista consolidada
-        setupConsolidatedView();
-        
-        // Actualizar datos en tiempo real
-        updateConsolidatedPanel();
-        updateSedesView();
-        updateAllStudentsView();
-        
-        // Mostrar sistema principal
-        document.getElementById('sede-selector').style.display = 'none';
-        document.getElementById('sede-info').style.display = 'block';
-        document.getElementById('main-system').style.display = 'block';
-        document.getElementById('user-profile').style.display = 'flex';
-        
-        showNotification('Modo vista consolidada activado', 'success');
-    } else {
-        // **CORRECCIÓN: Modo sede individual - ACCESO DIRECTO AL SISTEMA**
-        isConsolidatedView = false;
-        localStorage.setItem('currentSede', currentSede);
-        
-        console.log("Iniciando carga de datos para sede:", currentSede);
-        
-        // Cargar datos de la sede
-        loadSedeData();
-        
-        // Configurar vista individual
-        setupSedeIndividualView();
-        
-        // Actualizar información de la sede
-        updateSedeInfo();
-        
-        // **CORRECCIÓN: Mostrar elementos correctamente**
-        document.getElementById('sede-selector').style.display = 'none';
-        document.getElementById('sede-info').style.display = 'block';
-        document.getElementById('main-system').style.display = 'block';
-        document.getElementById('user-profile').style.display = 'flex';
-        
-        // Restaurar elementos a estado normal
-        document.getElementById('sede-info').classList.remove('consolidated-info');
-        document.getElementById('config-consolidated-warning').style.display = 'none';
-        document.getElementById('order-consolidated-warning').style.display = 'none';
-        document.getElementById('students-consolidated-warning').style.display = 'none';
-        document.getElementById('csv-consolidated-warning').style.display = 'none';
-        
-        // Habilitar botones de guardar
-        document.getElementById('save-config').disabled = false;
-        document.getElementById('save-order').disabled = false;
-        document.getElementById('save-thresholds').disabled = false;
-        document.getElementById('student-form').querySelector('button').disabled = false;
-        document.getElementById('import-csv').disabled = false;
-        
-        showNotification(`Bienvenido a la sede ${getSedeName(currentSede)} - Ya puede cargar notas`, 'success');
-        
-        // **CORRECCIÓN: Forzar actualización de la interfaz**
-        setTimeout(() => {
-            renderStudents();
-            updateFilterOptions();
-            updateResults();
-        }, 100);
-    }
-}
+            const sedeSelect = document.getElementById('sede');
+            const selectedSede = sedeSelect.value;
+            
+            if (!selectedSede) {
+                showNotification('Por favor, seleccione una sede', 'error');
+                return;
+            }
+            
+            currentSede = selectedSede;
+            console.log("Sede seleccionada:", currentSede);
+            
+            if (currentSede === 'todas_las_sedes') {
+                // Modo vista consolidada
+                isConsolidatedView = true;
+                document.getElementById('user-info').textContent = 'Usuario: Vista Consolidada';
+                document.getElementById('consolidated-panel').style.display = 'block';
+                document.getElementById('main-header').classList.add('consolidated-header');
+                document.getElementById('header-subtitle').textContent = 'Vista Consolidada - Todas las Sedes';
+                document.getElementById('sede-title').textContent = 'Vista Actual:';
+                document.getElementById('current-sede').textContent = 'Todas las Sedes (Solo Lectura)';
+                document.getElementById('sede-info').classList.add('consolidated-info');
+                
+                // Mostrar advertencias en las pestañas de edición
+                document.getElementById('config-consolidated-warning').style.display = 'block';
+                document.getElementById('order-consolidated-warning').style.display = 'block';
+                document.getElementById('students-consolidated-warning').style.display = 'block';
+                document.getElementById('csv-consolidated-warning').style.display = 'block';
+                
+                // Deshabilitar botones de guardar
+                document.getElementById('save-config').disabled = true;
+                document.getElementById('save-order').disabled = true;
+                document.getElementById('save-thresholds').disabled = true;
+                document.getElementById('student-form').querySelector('button').disabled = true;
+                document.getElementById('import-csv').disabled = true;
+                
+                // Configurar vista consolidada
+                setupConsolidatedView();
+                
+                // Actualizar datos en tiempo real
+                updateConsolidatedPanel();
+                updateSedesView();
+                updateAllStudentsView();
+                
+                // Mostrar sistema principal
+                document.getElementById('sede-selector').style.display = 'none';
+                document.getElementById('sede-info').style.display = 'block';
+                document.getElementById('main-system').style.display = 'block';
+                document.getElementById('user-profile').style.display = 'flex';
+                
+                showNotification('Modo vista consolidada activado', 'success');
+            } else {
+                // Mostrar modal de login para sede individual
+                showSedeLogin();
+            }
+        }
         
         function changeSede() {
             currentSede = '';
@@ -1915,84 +2027,66 @@
             showNotification('Sede cambiada exitosamente', 'success');
         }
         
-       function loadSedeData() {
-    console.log("Cargando datos para sede:", currentSede);
-    
-    try {
-        // Cargar datos específicos de la sede
-        students = JSON.parse(localStorage.getItem(`students_${currentSede}`)) || [];
-        answers = JSON.parse(localStorage.getItem(`answers_${currentSede}`)) || {};
-        courseConfig = JSON.parse(localStorage.getItem(`courseConfig_${currentSede}`)) || {};
-        questions = JSON.parse(localStorage.getItem(`questions_${currentSede}`)) || [];
-        
-        console.log("Estudiantes cargados:", students.length);
-        console.log("Respuestas cargadas:", Object.keys(answers).length);
-        console.log("Configuración de cursos:", courseConfig);
-        console.log("Preguntas cargadas:", questions.length);
-        
-        // Cargar umbrales (compartidos entre sedes)
-        const savedThresholds = JSON.parse(localStorage.getItem('thresholds'));
-        if (savedThresholds) {
-            thresholds = savedThresholds;
+        function loadSedeData() {
+            console.log("Cargando datos para sede:", currentSede);
+            
+            try {
+                // Cargar datos específicos de la sede
+                students = JSON.parse(localStorage.getItem(`students_${currentSede}`)) || [];
+                answers = JSON.parse(localStorage.getItem(`answers_${currentSede}`)) || {};
+                courseConfig = JSON.parse(localStorage.getItem(`courseConfig_${currentSede}`)) || {};
+                questions = JSON.parse(localStorage.getItem(`questions_${currentSede}`)) || [];
+                
+                console.log("Estudiantes cargados:", students.length);
+                console.log("Respuestas cargadas:", Object.keys(answers).length);
+                console.log("Configuración de cursos:", courseConfig);
+                console.log("Preguntas cargadas:", questions.length);
+                
+                // Cargar umbrales (compartidos entre sedes)
+                const savedThresholds = JSON.parse(localStorage.getItem('thresholds'));
+                if (savedThresholds) {
+                    thresholds = savedThresholds;
+                }
+                
+                // Inicializar configuración de cursos si no existe
+                if (Object.keys(courseConfig).length === 0) {
+                    console.log("Inicializando configuración por defecto");
+                    courses.forEach(course => {
+                        courseConfig[course] = 0;
+                    });
+                    localStorage.setItem(`courseConfig_${currentSede}`, JSON.stringify(courseConfig));
+                }
+                
+                // Generar preguntas si es necesario
+                const savedConfig = localStorage.getItem(`courseConfigHash_${currentSede}`);
+                const currentConfig = JSON.stringify(courseConfig);
+                
+                if (!savedConfig || savedConfig !== currentConfig) {
+                    console.log("Generando preguntas basadas en configuración");
+                    generateQuestions();
+                    localStorage.setItem(`courseConfigHash_${currentSede}`, currentConfig);
+                }
+                
+                // Actualizar interfaz de manera más robusta
+                setTimeout(() => {
+                    updateSedeInfo();
+                    renderCourseConfig();
+                    renderQuestionsOrder();
+                    renderThresholds();
+                    renderStudents();
+                    updateFilterOptions();
+                    applyFilters();
+                    updateResults();
+                    updateResultsFilterOptions();
+                }, 50);
+                
+                console.log("Datos cargados exitosamente para:", currentSede);
+                
+            } catch (error) {
+                console.error("Error cargando datos:", error);
+                showNotification('Error al cargar datos de la sede', 'error');
+            }
         }
-        
-        // Inicializar configuración de cursos si no existe
-        if (Object.keys(courseConfig).length === 0) {
-            console.log("Inicializando configuración por defecto");
-            courses.forEach(course => {
-                courseConfig[course] = 0;
-            });
-            localStorage.setItem(`courseConfig_${currentSede}`, JSON.stringify(courseConfig));
-        }
-        
-        // Generar preguntas si es necesario
-        const savedConfig = localStorage.getItem(`courseConfigHash_${currentSede}`);
-        const currentConfig = JSON.stringify(courseConfig);
-        
-        if (!savedConfig || savedConfig !== currentConfig) {
-            console.log("Generando preguntas basadas en configuración");
-            generateQuestions();
-            localStorage.setItem(`courseConfigHash_${currentSede}`, currentConfig);
-        }
-        
-        // **CORRECCIÓN: Actualizar interfaz de manera más robusta**
-        setTimeout(() => {
-            updateSedeInfo();
-            renderCourseConfig();
-            renderQuestionsOrder();
-            renderThresholds();
-            renderStudents();
-            updateFilterOptions();
-            applyFilters();
-            updateResults();
-            updateResultsFilterOptions();
-        }, 50);
-        
-        console.log("Datos cargados exitosamente para:", currentSede);
-        
-    } catch (error) {
-        console.error("Error cargando datos:", error);
-        showNotification('Error al cargar datos de la sede', 'error');
-    }
-}
-
-// Función para verificar el estado actual del sistema (útil para debugging)
-function checkSystemStatus() {
-    console.log("=== ESTADO DEL SISTEMA ===");
-    console.log("Sede actual:", currentSede);
-    console.log("Modo consolidado:", isConsolidatedView);
-    console.log("Es admin:", isAdmin);
-    console.log("Estudiantes cargados:", students.length);
-    console.log("Preguntas cargadas:", questions.length);
-    console.log("Elementos visibles:");
-    console.log("- Sede selector:", document.getElementById('sede-selector').style.display);
-    console.log("- Sede info:", document.getElementById('sede-info').style.display);
-    console.log("- Main system:", document.getElementById('main-system').style.display);
-    console.log("==========================");
-}
-
-// Puedes llamar a esta función para debuggear
-// checkSystemStatus();
         
         function updateSedeInfo() {
             document.getElementById('current-sede').textContent = getSedeName(currentSede);
@@ -3268,75 +3362,75 @@ function checkSystemStatus() {
         }
         
         function applyViewFilters() {
-    const sedeFilter = document.getElementById('view-filter-sede').value;
-    const gradeFilter = document.getElementById('view-filter-grade').value;
-    const levelFilter = document.getElementById('view-filter-level').value;
-    
-    // Actualizar la tabla con los filtros aplicados
-    updateAllStudentsViewWithFilters(sedeFilter, gradeFilter, levelFilter);
-    showNotification('Filtros aplicados a la vista consolidada', 'success');
-}
+            const sedeFilter = document.getElementById('view-filter-sede').value;
+            const gradeFilter = document.getElementById('view-filter-grade').value;
+            const levelFilter = document.getElementById('view-filter-level').value;
+            
+            // Actualizar la tabla con los filtros aplicados
+            updateAllStudentsViewWithFilters(sedeFilter, gradeFilter, levelFilter);
+            showNotification('Filtros aplicados a la vista consolidada', 'success');
+        }
 
-function updateAllStudentsViewWithFilters(sedeFilter, gradeFilter, levelFilter) {
-    const tbody = document.getElementById('all-students-list');
-    tbody.innerHTML = '';
-    
-    let filteredCount = 0;
-    
-    sedes.forEach(sede => {
-        if (sede.key === 'todas_las_sedes') return;
-        
-        // Aplicar filtro de sede
-        if (sedeFilter && sede.key !== sedeFilter) return;
-        
-        const sedeStudents = JSON.parse(localStorage.getItem(`students_${sede.key}`)) || [];
-        const sedeAnswers = JSON.parse(localStorage.getItem(`answers_${sede.key}`)) || {};
-        const sedeQuestions = JSON.parse(localStorage.getItem(`questions_${sede.key}`)) || [];
-        
-        sedeStudents.forEach(student => {
-            // Aplicar filtro de grado
-            if (gradeFilter && student.grade !== gradeFilter) return;
+        function updateAllStudentsViewWithFilters(sedeFilter, gradeFilter, levelFilter) {
+            const tbody = document.getElementById('all-students-list');
+            tbody.innerHTML = '';
             
-            const studentAnswers = sedeAnswers[student.dni] || {};
-            const totalScore = Object.values(studentAnswers).reduce((sum, score) => sum + score, 0);
-            const totalQuestions = sedeQuestions.length;
-            const percentage = totalQuestions > 0 ? ((totalScore / totalQuestions) * 100).toFixed(1) : 0;
-            const achievementLevel = calculateConsolidatedAchievementLevel(student.dni, sedeAnswers, sedeQuestions);
+            let filteredCount = 0;
             
-            // Aplicar filtro de nivel de logro
-            if (levelFilter && achievementLevel !== levelFilter) return;
+            sedes.forEach(sede => {
+                if (sede.key === 'todas_las_sedes') return;
+                
+                // Aplicar filtro de sede
+                if (sedeFilter && sede.key !== sedeFilter) return;
+                
+                const sedeStudents = JSON.parse(localStorage.getItem(`students_${sede.key}`)) || [];
+                const sedeAnswers = JSON.parse(localStorage.getItem(`answers_${sede.key}`)) || {};
+                const sedeQuestions = JSON.parse(localStorage.getItem(`questions_${sede.key}`)) || [];
+                
+                sedeStudents.forEach(student => {
+                    // Aplicar filtro de grado
+                    if (gradeFilter && student.grade !== gradeFilter) return;
+                    
+                    const studentAnswers = sedeAnswers[student.dni] || {};
+                    const totalScore = Object.values(studentAnswers).reduce((sum, score) => sum + score, 0);
+                    const totalQuestions = sedeQuestions.length;
+                    const percentage = totalQuestions > 0 ? ((totalScore / totalQuestions) * 100).toFixed(1) : 0;
+                    const achievementLevel = calculateConsolidatedAchievementLevel(student.dni, sedeAnswers, sedeQuestions);
+                    
+                    // Aplicar filtro de nivel de logro
+                    if (levelFilter && achievementLevel !== levelFilter) return;
+                    
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${sede.name}</td>
+                        <td>${student.name}</td>
+                        <td>${student.dni}</td>
+                        <td>${student.gradeLabel}</td>
+                        <td>${student.section}</td>
+                        <td>${totalScore}/${totalQuestions}</td>
+                        <td>${percentage}%</td>
+                        <td><span class="badge badge-${achievementLevel}">${getAchievementLabel(achievementLevel)}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                    filteredCount++;
+                });
+            });
             
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${sede.name}</td>
-                <td>${student.name}</td>
-                <td>${student.dni}</td>
-                <td>${student.gradeLabel}</td>
-                <td>${student.section}</td>
-                <td>${totalScore}/${totalQuestions}</td>
-                <td>${percentage}%</td>
-                <td><span class="badge badge-${achievementLevel}">${getAchievementLabel(achievementLevel)}</span></td>
-            `;
-            tbody.appendChild(tr);
-            filteredCount++;
-        });
-    });
-    
-    // Mostrar mensaje si no hay resultados
-    if (filteredCount === 0) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td colspan="8" style="text-align: center; padding: 20px; color: #666;">No se encontraron estudiantes con los filtros aplicados</td>`;
-        tbody.appendChild(tr);
-    }
-}
+            // Mostrar mensaje si no hay resultados
+            if (filteredCount === 0) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="8" style="text-align: center; padding: 20px; color: #666;">No se encontraron estudiantes con los filtros aplicados</td>`;
+                tbody.appendChild(tr);
+            }
+        }
         
         function clearViewFilters() {
             document.getElementById('view-filter-sede').value = '';
-    document.getElementById('view-filter-grade').value = '';
-    document.getElementById('view-filter-level').value = '';
-    // Actualizar la vista sin filtros
-    updateAllStudentsViewWithFilters('', '', '');
-    showNotification('Filtros de vista consolidada limpiados', 'success');
+            document.getElementById('view-filter-grade').value = '';
+            document.getElementById('view-filter-level').value = '';
+            // Actualizar la vista sin filtros
+            updateAllStudentsViewWithFilters('', '', '');
+            showNotification('Filtros de vista consolidada limpiados', 'success');
         }
         
         function updateAnalysisView() {
@@ -3428,173 +3522,173 @@ function updateAllStudentsViewWithFilters(sedeFilter, gradeFilter, levelFilter) 
         }
         
         function applyAnalysisFilters() {
-    const sedeFilter = document.getElementById('analysis-filter-sede').value;
-    const gradeFilter = document.getElementById('analysis-filter-grade').value;
-    
-    updateAnalysisViewWithFilters(sedeFilter, gradeFilter);
-    showNotification('Filtros de análisis aplicados', 'success');
-}
+            const sedeFilter = document.getElementById('analysis-filter-sede').value;
+            const gradeFilter = document.getElementById('analysis-filter-grade').value;
+            
+            updateAnalysisViewWithFilters(sedeFilter, gradeFilter);
+            showNotification('Filtros de análisis aplicados', 'success');
+        }
 
-function updateAnalysisViewWithFilters(sedeFilter, gradeFilter) {
-    const container = document.getElementById('analysis-results');
-    container.innerHTML = '';
-    
-    // Recopilar datos consolidados con filtros
-    let totalStudents = 0;
-    let levelCounts = { inicio: 0, proceso: 0, logrado: 0, destacado: 0 };
-    let sedeStats = {};
-    let gradeStats = {};
-    
-    // Inicializar estadísticas por sede y grado
-    sedes.forEach(sede => {
-        if (sede.key !== 'todas_las_sedes') {
-            sedeStats[sede.name] = { inicio: 0, proceso: 0, logrado: 0, destacado: 0, total: 0 };
-        }
-    });
-    
-    grades.forEach(grade => {
-        gradeStats[grade.value] = { inicio: 0, proceso: 0, logrado: 0, destacado: 0, total: 0 };
-    });
-    
-    // Procesar datos de todas las sedes
-    sedes.forEach(sede => {
-        if (sede.key === 'todas_las_sedes') return;
-        
-        // Aplicar filtro de sede
-        if (sedeFilter && sede.key !== sedeFilter) return;
-        
-        const sedeStudents = JSON.parse(localStorage.getItem(`students_${sede.key}`)) || [];
-        const sedeAnswers = JSON.parse(localStorage.getItem(`answers_${sede.key}`)) || {};
-        const sedeQuestions = JSON.parse(localStorage.getItem(`questions_${sede.key}`)) || [];
-        
-        sedeStudents.forEach(student => {
-            // Aplicar filtro de grado
-            if (gradeFilter && student.grade !== gradeFilter) return;
+        function updateAnalysisViewWithFilters(sedeFilter, gradeFilter) {
+            const container = document.getElementById('analysis-results');
+            container.innerHTML = '';
             
-            const level = calculateConsolidatedAchievementLevel(student.dni, sedeAnswers, sedeQuestions);
+            // Recopilar datos consolidados con filtros
+            let totalStudents = 0;
+            let levelCounts = { inicio: 0, proceso: 0, logrado: 0, destacado: 0 };
+            let sedeStats = {};
+            let gradeStats = {};
             
-            totalStudents++;
-            levelCounts[level]++;
-            sedeStats[sede.name][level]++;
-            sedeStats[sede.name].total++;
-            
-            if (gradeStats[student.grade]) {
-                gradeStats[student.grade][level]++;
-                gradeStats[student.grade].total++;
-            }
-        });
-    });
-    
-    // Generar HTML del análisis
-    let analysisHTML = '';
-    
-    if (totalStudents === 0) {
-        analysisHTML = `
-            <div class="card">
-                <h3>📊 Análisis Detallado</h3>
-                <p style="text-align: center; color: #666; padding: 40px;">
-                    No hay datos disponibles con los filtros aplicados
-                </p>
-            </div>
-        `;
-    } else {
-        // Distribución general
-        analysisHTML = `
-            <div class="card">
-                <h3>📊 Distribución General por Nivel de Logro</h3>
-                <p>Total de estudiantes analizados: <strong>${totalStudents}</strong></p>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
-                    <div style="background: var(--danger); color: white; padding: 15px; border-radius: 8px; text-align: center;">
-                        <h4>En Inicio</h4>
-                        <p style="font-size: 1.5em; font-weight: bold;">${((levelCounts.inicio / totalStudents) * 100).toFixed(1)}%</p>
-                        <p>${levelCounts.inicio} estudiantes</p>
-                    </div>
-                    <div style="background: var(--warning); color: white; padding: 15px; border-radius: 8px; text-align: center;">
-                        <h4>En Proceso</h4>
-                        <p style="font-size: 1.5em; font-weight: bold;">${((levelCounts.proceso / totalStudents) * 100).toFixed(1)}%</p>
-                        <p>${levelCounts.proceso} estudiantes</p>
-                    </div>
-                    <div style="background: var(--secondary); color: white; padding: 15px; border-radius: 8px; text-align: center;">
-                        <h4>Logrado</h4>
-                        <p style="font-size: 1.5em; font-weight: bold;">${((levelCounts.logrado / totalStudents) * 100).toFixed(1)}%</p>
-                        <p>${levelCounts.logrado} estudiantes</p>
-                    </div>
-                    <div style="background: var(--admin); color: white; padding: 15px; border-radius: 8px; text-align: center;">
-                        <h4>Logro Destacado</h4>
-                        <p style="font-size: 1.5em; font-weight: bold;">${((levelCounts.destacado / totalStudents) * 100).toFixed(1)}%</p>
-                        <p>${levelCounts.destacado} estudiantes</p>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        // Sedes con mejor desempeño (solo si no hay filtro de sede específico)
-        if (!sedeFilter) {
-            const rankedSedes = Object.keys(sedeStats)
-                .filter(sedeName => sedeStats[sedeName].total > 0)
-                .map(sedeName => {
-                    const stats = sedeStats[sedeName];
-                    const logroDestacadoPercent = ((stats.logrado + stats.destacado) / stats.total) * 100;
-                    return {
-                        name: sedeName,
-                        percentage: logroDestacadoPercent,
-                        total: stats.total
-                    };
-                })
-                .sort((a, b) => b.percentage - a.percentage)
-                .slice(0, 5);
-            
-            if (rankedSedes.length > 0) {
-                analysisHTML += `
-                    <div class="card">
-                        <h3>🎯 Sedes con Mejor Desempeño</h3>
-                        <ol style="margin-left: 20px; margin-top: 10px;">
-                `;
-                
-                rankedSedes.forEach((sede, index) => {
-                    analysisHTML += `<li><strong>${sede.name}</strong> - ${sede.percentage.toFixed(1)}% de logro y logro destacado (${sede.total} estudiantes)</li>`;
-                });
-                
-                analysisHTML += `
-                        </ol>
-                    </div>
-                `;
-            }
-        }
-        
-        // Tendencias por grado (solo si no hay filtro de grado específico)
-        if (!gradeFilter) {
-            analysisHTML += `
-                <div class="card">
-                    <h3>📈 Tendencias por Grado</h3>
-                    <p>Porcentaje de estudiantes en nivel Logrado + Logro Destacado:</p>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-            `;
-            
-            Object.keys(gradeStats).forEach(gradeKey => {
-                const stats = gradeStats[gradeKey];
-                if (stats.total > 0) {
-                    const gradeInfo = grades.find(g => g.value === gradeKey);
-                    const logroDestacadoPercent = ((stats.logrado + stats.destacado) / stats.total) * 100;
-                    analysisHTML += `<li><strong>${gradeInfo ? gradeInfo.label : gradeKey}:</strong> ${logroDestacadoPercent.toFixed(1)}% (${stats.total} estudiantes)</li>`;
+            // Inicializar estadísticas por sede y grado
+            sedes.forEach(sede => {
+                if (sede.key !== 'todas_las_sedes') {
+                    sedeStats[sede.name] = { inicio: 0, proceso: 0, logrado: 0, destacado: 0, total: 0 };
                 }
             });
             
-            analysisHTML += `
-                    </ul>
-                </div>
-            `;
+            grades.forEach(grade => {
+                gradeStats[grade.value] = { inicio: 0, proceso: 0, logrado: 0, destacado: 0, total: 0 };
+            });
+            
+            // Procesar datos de todas las sedes
+            sedes.forEach(sede => {
+                if (sede.key === 'todas_las_sedes') return;
+                
+                // Aplicar filtro de sede
+                if (sedeFilter && sede.key !== sedeFilter) return;
+                
+                const sedeStudents = JSON.parse(localStorage.getItem(`students_${sede.key}`)) || [];
+                const sedeAnswers = JSON.parse(localStorage.getItem(`answers_${sede.key}`)) || {};
+                const sedeQuestions = JSON.parse(localStorage.getItem(`questions_${sede.key}`)) || [];
+                
+                sedeStudents.forEach(student => {
+                    // Aplicar filtro de grado
+                    if (gradeFilter && student.grade !== gradeFilter) return;
+                    
+                    const level = calculateConsolidatedAchievementLevel(student.dni, sedeAnswers, sedeQuestions);
+                    
+                    totalStudents++;
+                    levelCounts[level]++;
+                    sedeStats[sede.name][level]++;
+                    sedeStats[sede.name].total++;
+                    
+                    if (gradeStats[student.grade]) {
+                        gradeStats[student.grade][level]++;
+                        gradeStats[student.grade].total++;
+                    }
+                });
+            });
+            
+            // Generar HTML del análisis
+            let analysisHTML = '';
+            
+            if (totalStudents === 0) {
+                analysisHTML = `
+                    <div class="card">
+                        <h3>📊 Análisis Detallado</h3>
+                        <p style="text-align: center; color: #666; padding: 40px;">
+                            No hay datos disponibles con los filtros aplicados
+                        </p>
+                    </div>
+                `;
+            } else {
+                // Distribución general
+                analysisHTML = `
+                    <div class="card">
+                        <h3>📊 Distribución General por Nivel de Logro</h3>
+                        <p>Total de estudiantes analizados: <strong>${totalStudents}</strong></p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                            <div style="background: var(--danger); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                                <h4>En Inicio</h4>
+                                <p style="font-size: 1.5em; font-weight: bold;">${((levelCounts.inicio / totalStudents) * 100).toFixed(1)}%</p>
+                                <p>${levelCounts.inicio} estudiantes</p>
+                            </div>
+                            <div style="background: var(--warning); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                                <h4>En Proceso</h4>
+                                <p style="font-size: 1.5em; font-weight: bold;">${((levelCounts.proceso / totalStudents) * 100).toFixed(1)}%</p>
+                                <p>${levelCounts.proceso} estudiantes</p>
+                            </div>
+                            <div style="background: var(--secondary); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                                <h4>Logrado</h4>
+                                <p style="font-size: 1.5em; font-weight: bold;">${((levelCounts.logrado / totalStudents) * 100).toFixed(1)}%</p>
+                                <p>${levelCounts.logrado} estudiantes</p>
+                            </div>
+                            <div style="background: var(--admin); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                                <h4>Logro Destacado</h4>
+                                <p style="font-size: 1.5em; font-weight: bold;">${((levelCounts.destacado / totalStudents) * 100).toFixed(1)}%</p>
+                                <p>${levelCounts.destacado} estudiantes</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Sedes con mejor desempeño (solo si no hay filtro de sede específico)
+                if (!sedeFilter) {
+                    const rankedSedes = Object.keys(sedeStats)
+                        .filter(sedeName => sedeStats[sedeName].total > 0)
+                        .map(sedeName => {
+                            const stats = sedeStats[sedeName];
+                            const logroDestacadoPercent = ((stats.logrado + stats.destacado) / stats.total) * 100;
+                            return {
+                                name: sedeName,
+                                percentage: logroDestacadoPercent,
+                                total: stats.total
+                            };
+                        })
+                        .sort((a, b) => b.percentage - a.percentage)
+                        .slice(0, 5);
+                    
+                    if (rankedSedes.length > 0) {
+                        analysisHTML += `
+                            <div class="card">
+                                <h3>🎯 Sedes con Mejor Desempeño</h3>
+                                <ol style="margin-left: 20px; margin-top: 10px;">
+                        `;
+                        
+                        rankedSedes.forEach((sede, index) => {
+                            analysisHTML += `<li><strong>${sede.name}</strong> - ${sede.percentage.toFixed(1)}% de logro y logro destacado (${sede.total} estudiantes)</li>`;
+                        });
+                        
+                        analysisHTML += `
+                                </ol>
+                            </div>
+                        `;
+                    }
+                }
+                
+                // Tendencias por grado (solo si no hay filtro de grado específico)
+                if (!gradeFilter) {
+                    analysisHTML += `
+                        <div class="card">
+                            <h3>📈 Tendencias por Grado</h3>
+                            <p>Porcentaje de estudiantes en nivel Logrado + Logro Destacado:</p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                    `;
+                    
+                    Object.keys(gradeStats).forEach(gradeKey => {
+                        const stats = gradeStats[gradeKey];
+                        if (stats.total > 0) {
+                            const gradeInfo = grades.find(g => g.value === gradeKey);
+                            const logroDestacadoPercent = ((stats.logrado + stats.destacado) / stats.total) * 100;
+                            analysisHTML += `<li><strong>${gradeInfo ? gradeInfo.label : gradeKey}:</strong> ${logroDestacadoPercent.toFixed(1)}% (${stats.total} estudiantes)</li>`;
+                        }
+                    });
+                    
+                    analysisHTML += `
+                            </ul>
+                        </div>
+                    `;
+                }
+            }
+            
+            container.innerHTML = analysisHTML;
         }
-    }
-    
-    container.innerHTML = analysisHTML;
-}
         
         function clearAnalysisFilters() {
             document.getElementById('analysis-filter-sede').value = '';
-    document.getElementById('analysis-filter-grade').value = '';
-    updateAnalysisViewWithFilters('', '');
-    showNotification('Filtros de análisis limpiados', 'success');
+            document.getElementById('analysis-filter-grade').value = '';
+            updateAnalysisViewWithFilters('', '');
+            showNotification('Filtros de análisis limpiados', 'success');
         }
         
         // Funciones de exportación para vista consolidada
@@ -3742,12 +3836,12 @@ function updateAnalysisViewWithFilters(sedeFilter, gradeFilter) {
         // Función para actualizar todas las vistas cuando hay cambios
         function refreshConsolidatedData() {
             if (isConsolidatedView || isAdmin) {
-        updateConsolidatedPanel();
-        updateSedesView();
-        updateAllStudentsViewWithFilters('', '', ''); // Usar la nueva función
-        updateAnalysisViewWithFilters('', ''); // Usar la nueva función
-    }
-}
+                updateConsolidatedPanel();
+                updateSedesView();
+                updateAllStudentsViewWithFilters('', '', ''); // Usar la nueva función
+                updateAnalysisViewWithFilters('', ''); // Usar la nueva función
+            }
+        }
         
         function exportSedesSummary() {
             const data = [];
