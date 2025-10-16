@@ -1,0 +1,3914 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Control de Preguntas</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --admin: #9b59b6;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), #2980b9);
+            color: white;
+            padding: 20px 0;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, var(--admin), #8e44ad);
+        }
+        
+        .consolidated-header {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+        }
+        
+        .user-profile {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-info {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .sede-selector {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .sede-info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .consolidated-info {
+            background: #ffeaa7;
+            border-left: 4px solid #e67e22;
+        }
+        
+        h1, h2, h3 {
+            margin-bottom: 15px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+        }
+        
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+        
+        .btn-success {
+            background-color: var(--secondary);
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-admin {
+            background-color: var(--admin);
+        }
+        
+        .btn-admin:hover {
+            background-color: #8e44ad;
+        }
+        
+        .btn-consolidated {
+            background-color: #e67e22;
+        }
+        
+        .btn-consolidated:hover {
+            background-color: #d35400;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .tab-container {
+            margin-top: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+        }
+        
+        .badge-inicio {
+            background-color: var(--danger);
+        }
+        
+        .badge-proceso {
+            background-color: var(--warning);
+        }
+        
+        .badge-logrado {
+            background-color: var(--secondary);
+        }
+        
+        .badge-destacado {
+            background-color: var(--admin);
+        }
+        
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .question-item {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            position: relative;
+        }
+        
+        .question-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .question-course {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .question-input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .student-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .summary-card {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .summary-item {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            flex: 1;
+            margin: 0 10px;
+            color: white;
+        }
+        
+        .summary-inicio {
+            background-color: var(--danger);
+        }
+        
+        .summary-proceso {
+            background-color: var(--warning);
+        }
+        
+        .summary-logrado {
+            background-color: var(--secondary);
+        }
+        
+        .summary-destacado {
+            background-color: var(--admin);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            background-color: var(--secondary);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .notification.success {
+            background-color: var(--secondary);
+        }
+        
+        .notification.error {
+            background-color: var(--danger);
+        }
+        
+        .course-config {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .course-item {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        
+        .course-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .config-summary {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        
+        .threshold-config {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .threshold-item {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        
+        .threshold-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .order-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .questions-order-list {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        
+        .order-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            background-color: white;
+        }
+        
+        .order-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .order-handle {
+            margin-right: 10px;
+            color: #666;
+        }
+        
+        .order-number {
+            font-weight: bold;
+            margin-right: 10px;
+            min-width: 30px;
+        }
+        
+        .order-course {
+            margin-right: 10px;
+            padding: 2px 8px;
+            background-color: #e8f4fd;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .order-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .student-form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .grade-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .grade-option {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .grade-option:hover {
+            border-color: var(--primary);
+            background-color: #f0f8ff;
+        }
+        
+        .grade-option.selected {
+            border-color: var(--secondary);
+            background-color: #e8f6f3;
+            font-weight: bold;
+        }
+        
+        .quinto-especial {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+        }
+        
+        .filter-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .student-info-card {
+            background: linear-gradient(135deg, #e8f4fd, #d1ecf1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .csv-import-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px dashed #ddd;
+        }
+        
+        .csv-preview {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: white;
+        }
+        
+        .export-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .admin-panel {
+            background: linear-gradient(135deg, var(--admin), #8e44ad);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .consolidated-panel {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+        }
+        
+        .admin-summary-card {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .admin-summary-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            flex: 1;
+            margin: 0 10px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .login-form {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+        }
+        
+        .warning-message {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+        
+        @media (max-width: 768px) {
+            .summary-card {
+                flex-direction: column;
+            }
+            
+            .summary-item {
+                margin: 5px 0;
+            }
+            
+            .admin-summary-card {
+                flex-direction: column;
+            }
+            
+            .admin-summary-item {
+                margin: 5px 0;
+            }
+            
+            .questions-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .course-config {
+                grid-template-columns: 1fr;
+            }
+            
+            .threshold-config {
+                grid-template-columns: 1fr;
+            }
+            
+            .order-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .order-actions {
+                margin-left: 0;
+                margin-top: 10px;
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .student-form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .grade-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-actions {
+                flex-direction: column;
+            }
+            
+            .export-actions {
+                flex-direction: column;
+            }
+            
+            .user-profile {
+                position: static;
+                justify-content: center;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header id="main-header">
+            <h1>Sistema de Control de Registro de Preguntas</h1>
+            <p id="header-subtitle">Gestión de calificaciones por sede educativa</p>
+            
+            <div class="user-profile" id="user-profile" style="display: none;">
+                <div class="user-info" id="user-info">Usuario: Sede Local</div>
+                <button id="admin-login" class="btn-admin">👤 Acceso Admin</button>
+                <button id="logout" class="btn-warning">🚪 Salir</button>
+            </div>
+        </header>
+        
+        <!-- Modal de Login Admin -->
+        <div class="login-modal" id="login-modal">
+            <div class="login-form">
+                <h2>Acceso Administrativo</h2>
+                <div class="form-group">
+                    <label for="admin-username">Usuario</label>
+                    <input type="text" id="admin-username" placeholder="Ingrese usuario admin">
+                </div>
+                <div class="form-group">
+                    <label for="admin-password">Contraseña</label>
+                    <input type="password" id="admin-password" placeholder="Ingrese contraseña">
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button id="login-admin" class="btn-admin" style="flex: 1;">Ingresar</button>
+                    <button id="cancel-login" class="btn-warning" style="flex: 1;">Cancelar</button>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; font-size: 12px;">
+                    <strong>Credenciales de prueba:</strong><br>
+                    Usuario: admin<br>
+                    Contraseña: admin123
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pantalla de Login (visible inicialmente) -->
+        <div class="sede-selector" id="login-screen">
+            <h2>Acceso al Sistema</h2>
+            <p>Seleccione su modo de acceso</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
+                <div style="text-align: center; padding: 20px; border: 2px solid var(--primary); border-radius: 8px;">
+                    <h3>Acceso Sede</h3>
+                    <p>Para usuarios de sedes educativas</p>
+                    <button id="access-sede" class="btn-secondary" style="margin-top: 15px;">Acceder como Sede</button>
+                </div>
+                
+                <div style="text-align: center; padding: 20px; border: 2px solid var(--admin); border-radius: 8px;">
+                    <h3>Acceso Administrativo</h3>
+                    <p>Para administradores del sistema</p>
+                    <button id="access-admin" class="btn-admin" style="margin-top: 15px;">Acceder como Admin</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Selector de Sede -->
+        <div class="sede-selector" id="sede-selector" style="display: none;">
+            <h2>Seleccione su Sede</h2>
+            <div class="form-group">
+                <label for="sede">Sede Educativa</label>
+                <select id="sede" required>
+                    <option value="">Seleccione una sede</option>
+                    <option value="AREQUIPA">AREQUIPA</option>
+                    <option value="BARRANCO">BARRANCO</option>
+                    <option value="BELISARIO">BELISARIO</option>
+                    <option value="BELLAVISTA">BELLAVISTA</option>
+                    <option value="BELLIDO">BELLIDO</option>
+                    <option value="CAJAMARCA">CAJAMARCA</option>
+                    <option value="CALCA">CALCA</option>
+                    <option value="CAMPOY">CAMPOY</option>
+                    <option value="CANTA CALLAO">CANTA CALLAO</option>
+                    <option value="CARABAYLLO">CARABAYLLO</option>
+                    <option value="CHACLACAYO">CHACLACAYO</option>
+                    <option value="CHORRILLOS">CHORRILLOS</option>
+                    <option value="CIPRESES">CIPRESES</option>
+                    <option value="CUBA">CUBA</option>
+                    <option value="EL AGUSTINO">EL AGUSTINO</option>
+                    <option value="EL RETABLO">EL RETABLO</option>
+                    <option value="EL ROSARIO">EL ROSARIO</option>
+                    <option value="ELIO">ELIO</option>
+                    <option value="HUAYCAN">HUAYCAN</option>
+                    <option value="HUANCAYO">HUANCAYO</option>
+                    <option value="HUARAL">HUARAL</option>
+                    <option value="ICA">ICA</option>
+                    <option value="INGENIEROS">INGENIEROS</option>
+                    <option value="JAVIER PRADO">JAVIER PRADO</option>
+                    <option value="JULIACA">JULIACA</option>
+                    <option value="LA VICTORIA">LA VICTORIA</option>
+                    <option value="LAS PALMERAS">LAS PALMERAS</option>
+                    <option value="LINCE">LINCE</option>
+                    <option value="LOS COCALENOS">LOS COCALENOS</option>
+                    <option value="LURIN">LURIN</option>
+                    <option value="MIGUEL IGLESIAS">MIGUEL IGLESIAS</option>
+                    <option value="MONTERRICO">MONTERRICO</option>
+                    <option value="MONTESSORI">MONTESSORI</option>
+                    <option value="NARANJAL">NARANJAL</option>
+                    <option value="PISCO">PISCO</option>
+                    <option value="PUCALLPA">PUCALLPA</option>
+                    <option value="PUEBLO LIBRE">PUEBLO LIBRE</option>
+                    <option value="PUENTE PIEDRA">PUENTE PIEDRA</option>
+                    <option value="QUILCA">QUILCA</option>
+                    <option value="SALAMANCA">SALAMANCA</option>
+                    <option value="SAN CARLOS">SAN CARLOS</option>
+                    <option value="SAN LUIS">SAN LUIS</option>
+                    <option value="SAN MIGUEL">SAN MIGUEL</option>
+                    <option value="SANTA ANITA">SANTA ANITA</option>
+                    <option value="SORIA">SORIA</option>
+                    <option value="TARMA">TARMA</option>
+                    <option value="VENTANILLA">VENTANILLA</option>
+                    <option value="VILLA EL SALVADOR">VILLA EL SALVADOR</option>
+                    <option value="VILLA SOL">VILLA SOL</option>
+                    <option value="todas_las_sedes" style="font-weight: bold; background-color: #ffeaa7;">
+                        Todas las Sedes (Vista Consolidada)
+                    </option>
+                </select>
+            </div>
+            <button id="enter-system">Ingresar al Sistema</button>
+        </div>
+        
+        <!-- Información de Sede Actual -->
+        <div class="sede-info" id="sede-info" style="display: none;">
+            <h3 id="sede-title">Sede Actual: <span id="current-sede">No seleccionada</span></h3>
+            <button id="change-sede" class="btn-warning">Cambiar Sede</button>
+        </div>
+        
+        <!-- Sistema Principal (oculto inicialmente) -->
+        <div id="main-system" style="display: none;">
+            <!-- Panel de Vista Consolidada (para modo "Todas las Sedes") -->
+            <div class="admin-panel consolidated-panel" id="consolidated-panel" style="display: none;">
+                <h2>👁️ Vista Consolidada - Todas las Sedes</h2>
+                <p>Resumen general de todos los estudiantes de todas las sedes (modo vista)</p>
+                
+                <div class="export-actions">
+                    <button id="export-consolidated" class="btn-consolidated">📋 Descargar Consolidado</button>
+                    <button id="export-consolidated-by-level" class="btn-success">🎯 Descargar por Nivel de Logro</button>
+                    <button id="export-sedes-summary" class="btn-admin">🏫 Descargar Resumen por Sede</button>
+                </div>
+                
+                <!-- Resumen Consolidado General -->
+                <div class="admin-summary-card">
+                    <div class="admin-summary-item summary-inicio">
+                        <h3>En Inicio</h3>
+                        <p id="consolidated-count-inicio" style="font-size: 2em; font-weight: bold;">0</p>
+                        <p id="consolidated-percent-inicio">0%</p>
+                    </div>
+                    <div class="admin-summary-item summary-proceso">
+                        <h3>En Proceso</h3>
+                        <p id="consolidated-count-proceso" style="font-size: 2em; font-weight: bold;">0</p>
+                        <p id="consolidated-percent-proceso">0%</p>
+                    </div>
+                    <div class="admin-summary-item summary-logrado">
+                        <h3>Logrado</h3>
+                        <p id="consolidated-count-logrado" style="font-size: 2em; font-weight: bold;">0</p>
+                        <p id="consolidated-percent-logrado">0%</p>
+                    </div>
+                    <div class="admin-summary-item summary-destacado">
+                        <h3>Logro Destacado</h3>
+                        <p id="consolidated-count-destacado" style="font-size: 2em; font-weight: bold;">0</p>
+                        <p id="consolidated-percent-destacado">0%</p>
+                    </div>
+                </div>
+                
+                <div class="card" style="background: rgba(255,255,255,0.9);">
+                    <h3>📈 Resumen General</h3>
+                    <p><strong>Total de Estudiantes en todas las sedes:</strong> <span id="consolidated-total-students">0</span></p>
+                    <p><strong>Total de Sedes:</strong> <span id="consolidated-total-sedes">0</span></p>
+                    <p><strong>Fecha de actualización:</strong> <span id="consolidated-update-time">-</span></p>
+                </div>
+            </div>
+            
+            <div class="tab-container">
+                <div class="tabs" id="main-tabs">
+                    <!-- Tabs para modo sede individual -->
+                    <div class="tab active" data-tab="config" id="tab-config">Configuración de Cursos</div>
+                    <div class="tab" data-tab="order" id="tab-order">Orden de Preguntas</div>
+                    <div class="tab" data-tab="thresholds" id="tab-thresholds">Umbrales de Logro</div>
+                    <div class="tab" data-tab="students" id="tab-students">Gestión de Estudiantes</div>
+                    <div class="tab" data-tab="questions" id="tab-questions">Registro de Preguntas</div>
+                    <div class="tab" data-tab="results" id="tab-results">Resultados y Análisis</div>
+                    
+                    <!-- Tabs para modo consolidado -->
+                    <div class="tab" data-tab="sedes-view" style="display: none;" id="consolidated-tab">Resumen por Sede</div>
+                    <div class="tab" data-tab="students-view" style="display: none;" id="consolidated-tab-students">Todos los Estudiantes</div>
+                    <div class="tab" data-tab="analysis" style="display: none;" id="consolidated-tab-analysis">Análisis Detallado</div>
+                </div>
+                
+                <!-- Pestaña de Configuración de Cursos (Sede Individual) -->
+                <div class="tab-content active" id="config-tab">
+                    <div class="card">
+                        <h2>Configuración de Preguntas por Curso</h2>
+                        <p>Establezca la cantidad de preguntas para cada curso. El total puede variar según sus necesidades.</p>
+                        
+                        <div id="config-consolidated-warning" class="warning-message" style="display: none;">
+                            <strong>⚠ Modo Vista Consolidada:</strong> En este modo solo puede visualizar la configuración. Para modificar la configuración, seleccione una sede específica.
+                        </div>
+                        
+                        <div class="course-config" id="course-config">
+                            <!-- Los cursos se generarán aquí dinámicamente -->
+                        </div>
+                        
+                        <div class="config-summary">
+                            <h3>Resumen de Configuración</h3>
+                            <p>Total de preguntas configuradas: <span id="total-questions">0</span></p>
+                            <p id="config-status" style="font-weight: bold; margin-top: 10px;"></p>
+                        </div>
+                        
+                        <div style="margin-top: 20px; text-align: center;">
+                            <button id="save-config" class="btn-secondary">Guardar Configuración</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pestaña de Orden de Preguntas (Sede Individual) -->
+                <div class="tab-content" id="order-tab">
+                    <div class="card">
+                        <h2>Orden de Preguntas</h2>
+                        <p>Arrastre y suelte para reorganizar el orden de las preguntas. También puede usar los botones para mover preguntas específicas.</p>
+                        
+                        <div id="order-consolidated-warning" class="warning-message" style="display: none;">
+                            <strong>⚠ Modo Vista Consolidada:</strong> En este modo solo puede visualizar el orden de preguntas. Para modificar el orden, seleccione una sede específica.
+                        </div>
+                        
+                        <div class="order-controls">
+                            <div>
+                                <button id="auto-sort" class="btn-secondary">Ordenar por Curso</button>
+                                <button id="reverse-order" class="btn-warning">Invertir Orden</button>
+                            </div>
+                            <div class="order-actions">
+                                <button id="move-up" class="btn-secondary">▲ Subir</button>
+                                <button id="move-down" class="btn-secondary">▼ Bajar</button>
+                                <button id="move-top" class="btn-secondary">⏫ Principio</button>
+                                <button id="move-bottom" class="btn-secondary">⏬ Final</button>
+                            </div>
+                        </div>
+                        
+                        <div class="questions-order-list" id="questions-order-list">
+                            <!-- Las preguntas ordenadas se mostrarán aquí -->
+                        </div>
+                        
+                        <div style="margin-top: 20px; text-align: center;">
+                            <button id="save-order" class="btn-secondary">Guardar Orden</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pestaña de Umbrales de Logro (Sede Individual) -->
+                <div class="tab-content" id="thresholds-tab">
+                    <div class="card">
+                        <h2>Configuración de Umbrales de Logro</h2>
+                        <p>Establezca los rangos de puntaje para cada nivel de logro. Los valores se calcularán como porcentajes del total de preguntas.</p>
+                        
+                        <div class="threshold-config" id="threshold-config">
+                            <div class="threshold-item">
+                                <div class="threshold-header">En Inicio</div>
+                                <div class="form-group">
+                                    <label for="threshold-inicio-min">Mínimo (%)</label>
+                                    <input type="number" min="0" max="100" id="threshold-inicio-min" value="0" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="threshold-inicio-max">Máximo (%)</label>
+                                    <input type="number" min="0" max="100" id="threshold-inicio-max" value="14.7">
+                                </div>
+                            </div>
+                            
+                            <div class="threshold-item">
+                                <div class="threshold-header">En Proceso</div>
+                                <div class="form-group">
+                                    <label for="threshold-proceso-min">Mínimo (%)</label>
+                                    <input type="number" min="0" max="100" id="threshold-proceso-min" value="14.7">
+                                </div>
+                                <div class="form-group">
+                                    <label for="threshold-proceso-max">Máximo (%)</label>
+                                    <input type="number" min="0" max="100" id="threshold-proceso-max" value="51.5">
+                                </div>
+                            </div>
+                            
+                            <div class="threshold-item">
+                                <div class="threshold-header">Logrado</div>
+                                <div class="form-group">
+                                    <label for="threshold-logrado-min">Mínimo (%)</label>
+                                    <input type="number" min="0" max="100" id="threshold-logrado-min" value="51.5">
+                                </div>
+                                <div class="form-group">
+                                    <label for="threshold-logrado-max">Máximo (%)</label>
+                                    <input type="number" min="0" max="100" id="threshold-logrado-max" value="75">
+                                </div>
+                            </div>
+                            
+                            <div class="threshold-item">
+                                <div class="threshold-header">Logro Destacado</div>
+                                <div class="form-group">
+                                    <label for="threshold-destacado-min">Mínimo (%)</label>
+                                    <input type="number" min="0" max="100" id="threshold-destacado-min" value="75">
+                                </div>
+                                <div class="form-group">
+                                    <label for="threshold-destacado-max">Máximo (%)</label>
+                                    <input type="number" min="0" max="100" id="threshold-destacado-max" value="100" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="config-summary">
+                            <h3>Resumen de Umbrales</h3>
+                            <p>Total de preguntas: <span id="threshold-total-questions">0</span></p>
+                            <div id="thresholds-summary">
+                                <!-- Los umbrales calculados se mostrarán aquí -->
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px; text-align: center;">
+                            <button id="save-thresholds" class="btn-secondary">Guardar Umbrales</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pestaña de Gestión de Estudiantes (Sede Individual) -->
+                <div class="tab-content" id="students-tab">
+                    <div class="card">
+                        <h2>Registrar Nuevo Estudiante</h2>
+                        
+                        <div id="students-consolidated-warning" class="warning-message" style="display: none;">
+                            <strong>⚠ Modo Vista Consolidada:</strong> En este modo solo puede visualizar estudiantes. Para gestionar estudiantes, seleccione una sede específica.
+                        </div>
+                        
+                        <form id="student-form">
+                            <div class="student-form-grid">
+                                <div class="form-group">
+                                    <label for="student-dni">DNI del Estudiante</label>
+                                    <input type="text" id="student-dni" pattern="[0-9]{8}" title="Ingrese 8 dígitos" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="student-name">Nombre Completo</label>
+                                    <input type="text" id="student-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="student-grade">Grado</label>
+                                    <select id="student-grade" required style="display: none;">
+                                        <option value="">Seleccione un grado</option>
+                                        <!-- Opciones se generarán dinámicamente -->
+                                    </select>
+                                    <div class="grade-options" id="grade-options">
+                                        <!-- Opciones de grado se generarán aquí -->
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="student-section">Sección</label>
+                                    <input type="text" id="student-section" required>
+                                </div>
+                            </div>
+                            <button type="submit">Agregar Estudiante</button>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <h2>Importar Estudiantes desde CSV</h2>
+                        <div class="csv-import-section">
+                            <div id="csv-consolidated-warning" class="warning-message" style="display: none;">
+                                <strong>⚠ Modo Vista Consolidada:</strong> En este modo no puede importar estudiantes. Para importar estudiantes, seleccione una sede específica.
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="csv-file">Seleccionar archivo CSV</label>
+                                <input type="file" id="csv-file" accept=".csv">
+                                <small>Formato esperado: DNI, Nombre, Grado, Sección (sin encabezados)</small>
+                            </div>
+                            <div class="form-group">
+                                <button id="import-csv" class="btn-secondary">Importar CSV</button>
+                                <button id="download-template" class="btn-warning">Descargar Plantilla</button>
+                            </div>
+                            <div class="csv-preview" id="csv-preview" style="display: none;">
+                                <h4>Vista previa de datos:</h4>
+                                <div id="preview-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h2>Lista de Estudiantes - <span id="current-sede-students"></span></h2>
+                        <div class="student-list">
+                            <table id="students-table">
+                                <thead>
+                                    <tr>
+                                        <th>DNI</th>
+                                        <th>Nombre</th>
+                                        <th>Grado</th>
+                                        <th>Sección</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="students-list">
+                                    <!-- Los estudiantes se agregarán aquí dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pestaña de Registro de Preguntas (Sede Individual) -->
+                <div class="tab-content" id="questions-tab">
+                    <div class="card">
+                        <h2>Filtros de Búsqueda</h2>
+                        <div class="filter-container">
+                            <div class="form-group">
+                                <label for="filter-grade">Grado</label>
+                                <select id="filter-grade">
+                                    <option value="">Todos los grados</option>
+                                    <!-- Las opciones de grado se generarán dinámicamente -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="filter-section">Sección</label>
+                                <select id="filter-section">
+                                    <option value="">Todas las secciones</option>
+                                    <!-- Las opciones de sección se generarán dinámicamente -->
+                                </select>
+                            </div>
+                            <div class="filter-actions">
+                                <button id="apply-filters" class="btn-secondary">Aplicar Filtros</button>
+                                <button id="clear-filters" class="btn-warning">Limpiar Filtros</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h2>Seleccionar Estudiante</h2>
+                        <div class="student-info-card" id="filter-info" style="display: none;">
+                            <h3>Filtros aplicados:</h3>
+                            <p id="current-filters">Mostrando todos los estudiantes</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="student-select">Estudiante</label>
+                            <select id="student-select">
+                                <option value="">Seleccione un estudiante</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="card" id="questions-container" style="display: none;">
+                        <h2>Registro de Respuestas</h2>
+                        <div class="student-info-card">
+                            <h3>Información del Estudiante</h3>
+                            <p><strong>Nombre:</strong> <span id="student-selected-name">-</span></p>
+                            <p><strong>DNI:</strong> <span id="student-selected-dni">-</span></p>
+                            <p><strong>Grado:</strong> <span id="student-selected-grade">-</span></p>
+                            <p><strong>Sección:</strong> <span id="student-selected-section">-</span></p>
+                        </div>
+                        <p>Total de preguntas: <span id="questions-count">0</span></p>
+                        <p>Ingrese 1 para respuesta correcta, 0 para incorrecta</p>
+                        
+                        <div class="questions-grid" id="questions-grid">
+                            <!-- Las preguntas se generarán aquí dinámicamente -->
+                        </div>
+                        
+                        <div style="margin-top: 20px; text-align: center;">
+                            <button id="save-answers">Guardar Respuestas</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pestaña de Resultados y Análisis (Sede Individual) -->
+                <div class="tab-content" id="results-tab">
+                    <div class="card">
+                        <h2>Resumen de Resultados - <span id="current-sede-results"></span></h2>
+                        
+                        <div class="export-actions">
+                            <button id="export-excel" class="btn-success">📊 Descargar Excel Completo</button>
+                            <button id="export-summary" class="btn-secondary">📋 Descargar Resumen</button>
+                            <button id="export-filtered" class="btn-warning">🔍 Descargar Filtrado Actual</button>
+                        </div>
+                        
+                        <div class="summary-card">
+                            <div class="summary-item summary-inicio">
+                                <h3>En Inicio</h3>
+                                <p id="count-inicio">0</p>
+                            </div>
+                            <div class="summary-item summary-proceso">
+                                <h3>En Proceso</h3>
+                                <p id="count-proceso">0</p>
+                            </div>
+                            <div class="summary-item summary-logrado">
+                                <h3>Logrado</h3>
+                                <p id="count-logrado">0</p>
+                            </div>
+                            <div class="summary-item summary-destacado">
+                                <h3>Logro Destacado</h3>
+                                <p id="count-destacado">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h2>Filtros para Resultados</h2>
+                        <div class="filter-container">
+                            <div class="form-group">
+                                <label for="results-filter-grade">Grado</label>
+                                <select id="results-filter-grade">
+                                    <option value="">Todos los grados</option>
+                                    <!-- Las opciones de grado se generarán dinámicamente -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="results-filter-section">Sección</label>
+                                <select id="results-filter-section">
+                                    <option value="">Todas las secciones</option>
+                                    <!-- Las opciones de sección se generarán dinámicamente -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="results-filter-level">Nivel de Logro</label>
+                                <select id="results-filter-level">
+                                    <option value="">Todos los niveles</option>
+                                    <option value="inicio">En Inicio</option>
+                                    <option value="proceso">En Proceso</option>
+                                    <option value="logrado">Logrado</option>
+                                    <option value="destacado">Logro Destacado</option>
+                                </select>
+                            </div>
+                            <div class="filter-actions">
+                                <button id="apply-results-filters" class="btn-secondary">Aplicar Filtros</button>
+                                <button id="clear-results-filters" class="btn-warning">Limpiar Filtros</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h2>Resultados por Estudiante</h2>
+                        <table id="results-table">
+                            <thead>
+                                <tr>
+                                    <th>Estudiante</th>
+                                    <th>DNI</th>
+                                    <th>Grado</th>
+                                    <th>Sección</th>
+                                    <th>Puntaje Total</th>
+                                    <th>Porcentaje</th>
+                                    <th>Nivel de Logro</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-list">
+                                <!-- Los resultados se agregarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Pestañas para Vista Consolidada -->
+                
+                <!-- Pestaña de Resumen por Sede (para modo "Todas las Sedes") -->
+                <div class="tab-content" id="sedes-view-tab">
+                    <div class="card">
+                        <h2>Resumen por Sede - Vista Consolidada</h2>
+                        <p>Esta vista muestra un resumen de todas las sedes del sistema.</p>
+                        
+                        <table id="all-sedes-summary-table">
+                            <thead>
+                                <tr>
+                                    <th>Sede</th>
+                                    <th>Total Estudiantes</th>
+                                    <th>En Inicio</th>
+                                    <th>En Proceso</th>
+                                    <th>Logrado</th>
+                                    <th>Logro Destacado</th>
+                                    <th>% Logro + Destacado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-sedes-summary-list">
+                                <!-- Los datos de todas las sedes se agregarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Pestaña de Todos los Estudiantes (Vista Consolidada) -->
+                <div class="tab-content" id="students-view-tab">
+                    <div class="card">
+                        <h2>Estudiantes de Todas las Sedes</h2>
+                        
+                        <div class="filter-container">
+                            <div class="form-group">
+                                <label for="view-filter-sede">Filtrar por Sede</label>
+                                <select id="view-filter-sede">
+                                    <option value="">Todas las sedes</option>
+                                    <!-- Las opciones de sede se generarán dinámicamente -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="view-filter-grade">Filtrar por Grado</label>
+                                <select id="view-filter-grade">
+                                    <option value="">Todos los grados</option>
+                                    <!-- Las opciones de grado se generarán dinámicamente -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="view-filter-level">Filtrar por Nivel</label>
+                                <select id="view-filter-level">
+                                    <option value="">Todos los niveles</option>
+                                    <option value="inicio">En Inicio</option>
+                                    <option value="proceso">En Proceso</option>
+                                    <option value="logrado">Logrado</option>
+                                    <option value="destacado">Logro Destacado</option>
+                                </select>
+                            </div>
+                            <div class="filter-actions">
+                                <button id="apply-view-filters" class="btn-admin">Aplicar Filtros</button>
+                                <button id="clear-view-filters" class="btn-warning">Limpiar Filtros</button>
+                            </div>
+                        </div>
+                        
+                        <table id="all-students-table">
+                            <thead>
+                                <tr>
+                                    <th>Sede</th>
+                                    <th>Estudiante</th>
+                                    <th>DNI</th>
+                                    <th>Grado</th>
+                                    <th>Sección</th>
+                                    <th>Puntaje</th>
+                                    <th>Porcentaje</th>
+                                    <th>Nivel de Logro</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-students-list">
+                                <!-- Los estudiantes de todas las sedes se agregarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Pestaña de Análisis Detallado (Vista Consolidada) -->
+                <div class="tab-content" id="analysis-tab">
+                    <div class="card">
+                        <h2>Análisis Detallado por Sede y Grado</h2>
+                        <p>Vista analítica de los resultados consolidados</p>
+                        
+                        <div class="filter-container">
+                            <div class="form-group">
+                                <label for="analysis-filter-sede">Filtrar por Sede</label>
+                                <select id="analysis-filter-sede">
+                                    <option value="">Todas las sedes</option>
+                                    <!-- Las opciones de sede se generarán dinámicamente -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="analysis-filter-grade">Filtrar por Grado</label>
+                                <select id="analysis-filter-grade">
+                                    <option value="">Todos los grados</option>
+                                    <!-- Las opciones de grado se generarán dinámicamente -->
+                                </select>
+                            </div>
+                            <div class="filter-actions">
+                                <button id="apply-analysis-filters" class="btn-admin">Aplicar Filtros</button>
+                                <button id="clear-analysis-filters" class="btn-warning">Limpiar Filtros</button>
+                            </div>
+                        </div>
+                        
+                        <div id="analysis-results">
+                            <!-- Los resultados del análisis se mostrarán aquí -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        // Variables globales
+        let currentSede = '';
+        let students = [];
+        let answers = {};
+        let courseConfig = {};
+        let questions = [];
+        let thresholds = {
+            inicio: { min: 0, max: 14.7 },
+            proceso: { min: 14.7, max: 51.5 },
+            logrado: { min: 51.5, max: 75 },
+            destacado: { min: 75, max: 100 }
+        };
+        let selectedOrderItem = null;
+        let selectedGrade = '';
+        let currentFilters = {
+            grade: '',
+            section: ''
+        };
+        let currentResultsFilters = {
+            grade: '',
+            section: '',
+            level: ''
+        };
+        
+        // Variables para administrador
+        let isAdmin = false;
+        let isConsolidatedView = false;
+        const adminCredentials = {
+            username: 'admin',
+            password: 'admin123'
+        };
+        
+        // Lista de sedes actualizada
+        const sedes = [
+            { key: 'AREQUIPA', name: 'AREQUIPA' },
+            { key: 'BARRANCO', name: 'BARRANCO' },
+            { key: 'BELISARIO', name: 'BELISARIO' },
+            { key: 'BELLAVISTA', name: 'BELLAVISTA' },
+            { key: 'BELLIDO', name: 'BELLIDO' },
+            { key: 'CAJAMARCA', name: 'CAJAMARCA' },
+            { key: 'CALCA', name: 'CALCA' },
+            { key: 'CAMPOY', name: 'CAMPOY' },
+            { key: 'CANTA CALLAO', name: 'CANTA CALLAO' },
+            { key: 'CARABAYLLO', name: 'CARABAYLLO' },
+            { key: 'CHACLACAYO', name: 'CHACLACAYO' },
+            { key: 'CHORRILLOS', name: 'CHORRILLOS' },
+            { key: 'CIPRESES', name: 'CIPRESES' },
+            { key: 'CUBA', name: 'CUBA' },
+            { key: 'EL AGUSTINO', name: 'EL AGUSTINO' },
+            { key: 'EL RETABLO', name: 'EL RETABLO' },
+            { key: 'EL ROSARIO', name: 'EL ROSARIO' },
+            { key: 'ELIO', name: 'ELIO' },
+            { key: 'HUAYCAN', name: 'HUAYCAN' },
+            { key: 'HUANCAYO', name: 'HUANCAYO' },
+            { key: 'HUARAL', name: 'HUARAL' },
+            { key: 'ICA', name: 'ICA' },
+            { key: 'INGENIEROS', name: 'INGENIEROS' },
+            { key: 'JAVIER PRADO', name: 'JAVIER PRADO' },
+            { key: 'JULIACA', name: 'JULIACA' },
+            { key: 'LA VICTORIA', name: 'LA VICTORIA' },
+            { key: 'LAS PALMERAS', name: 'LAS PALMERAS' },
+            { key: 'LINCE', name: 'LINCE' },
+            { key: 'LOS COCALENOS', name: 'LOS COCALENOS' },
+            { key: 'LURIN', name: 'LURIN' },
+            { key: 'MIGUEL IGLESIAS', name: 'MIGUEL IGLESIAS' },
+            { key: 'MONTERRICO', name: 'MONTERRICO' },
+            { key: 'MONTESSORI', name: 'MONTESSORI' },
+            { key: 'NARANJAL', name: 'NARANJAL' },
+            { key: 'PISCO', name: 'PISCO' },
+            { key: 'PUCALLPA', name: 'PUCALLPA' },
+            { key: 'PUEBLO LIBRE', name: 'PUEBLO LIBRE' },
+            { key: 'PUENTE PIEDRA', name: 'PUENTE PIEDRA' },
+            { key: 'QUILCA', name: 'QUILCA' },
+            { key: 'SALAMANCA', name: 'SALAMANCA' },
+            { key: 'SAN CARLOS', name: 'SAN CARLOS' },
+            { key: 'SAN LUIS', name: 'SAN LUIS' },
+            { key: 'SAN MIGUEL', name: 'SAN MIGUEL' },
+            { key: 'SANTA ANITA', name: 'SANTA ANITA' },
+            { key: 'SORIA', name: 'SORIA' },
+            { key: 'TARMA', name: 'TARMA' },
+            { key: 'VENTANILLA', name: 'VENTANILLA' },
+            { key: 'VILLA EL SALVADOR', name: 'VILLA EL SALVADOR' },
+            { key: 'VILLA SOL', name: 'VILLA SOL' }
+        ];
+        
+        // Lista de cursos
+        const courses = ['RM', 'RV', 'IN', 'A', 'X', 'G', 'T', 'F', 'Q', 'B', 'LE', 'LI', 'HP', 'HU', 'GE', 'EC', 'PS'];
+        
+        // Grados disponibles con especializaciones de 5to
+        const grades = [
+            { value: '1ero', label: '1ero de Secundaria' },
+            { value: '2do', label: '2do de Secundaria' },
+            { value: '3ero', label: '3ero de Secundaria' },
+            { value: '4to', label: '4to de Secundaria' },
+            { value: '5to', label: '5to de Secundaria' },
+            { value: '5to_pre', label: '5to Pre', special: true },
+            { value: '5to_san_marcos', label: '5to San Marcos', special: true },
+            { value: '5to_uni', label: '5to Uni', special: true }
+        ];
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Sistema inicializado");
+            setupEventListeners();
+            renderGradeOptions();
+            initializeSampleData();
+            
+            // Verificar si hay una sede activa en localStorage
+            const savedSede = localStorage.getItem('currentSede');
+            if (savedSede && savedSede !== 'todas_las_sedes') {
+                // Si hay una sede guardada, ir directamente al sistema
+                currentSede = savedSede;
+                loadSedeData();
+                setupSedeIndividualView();
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('sede-info').style.display = 'block';
+                document.getElementById('main-system').style.display = 'block';
+                document.getElementById('user-profile').style.display = 'flex';
+                updateSedeInfo();
+                showNotification(`Bienvenido de nuevo a ${getSedeName(currentSede)}`, 'success');
+            }
+        });
+        
+        function setupEventListeners() {
+            console.log("Configurando event listeners");
+            
+            // Pantalla de login inicial
+            document.getElementById('access-sede').addEventListener('click', showSedeSelector);
+            document.getElementById('access-admin').addEventListener('click', showAdminLogin);
+            
+            // Selector de sede
+            document.getElementById('enter-system').addEventListener('click', enterSystem);
+            document.getElementById('change-sede').addEventListener('click', changeSede);
+            
+            // Login administrativo
+            document.getElementById('admin-login').addEventListener('click', showAdminLogin);
+            document.getElementById('login-admin').addEventListener('click', loginAdmin);
+            document.getElementById('cancel-login').addEventListener('click', hideAdminLogin);
+            document.getElementById('logout').addEventListener('click', logout);
+            
+            // Exportación vista consolidada
+            document.getElementById('export-consolidated').addEventListener('click', exportConsolidatedView);
+            document.getElementById('export-consolidated-by-level').addEventListener('click', exportConsolidatedByLevel);
+            document.getElementById('export-sedes-summary').addEventListener('click', exportSedesSummary);
+            
+            // Tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remover clase active de todos los tabs y contenidos
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Agregar clase active al tab y contenido seleccionado
+                    this.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                    
+                    // Si se selecciona la pestaña de preguntas, actualizar los filtros
+                    if (tabId === 'questions') {
+                        updateFilterOptions();
+                        applyFilters();
+                    }
+                    
+                    // Si se selecciona la pestaña de resultados, actualizar los datos
+                    if (tabId === 'results') {
+                        updateResults();
+                        updateResultsFilterOptions();
+                    }
+                    
+                    // Si se selecciona la pestaña de resumen por sede, actualizar los datos
+                    if (tabId === 'sedes-view') {
+                        updateSedesView();
+                    }
+                    
+                    // Si se selecciona la pestaña de todos los estudiantes, actualizar los datos
+                    if (tabId === 'students-view') {
+                        updateAllStudentsView();
+                    }
+                    
+                    // Si se selecciona la pestaña de análisis, actualizar los datos
+                    if (tabId === 'analysis') {
+                        updateAnalysisView();
+                    }
+                });
+            });
+            
+            // Formulario de estudiante
+            document.getElementById('student-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addStudent();
+            });
+            
+            // CSV Import
+            document.getElementById('import-csv').addEventListener('click', importCSV);
+            document.getElementById('download-template').addEventListener('click', downloadTemplate);
+            document.getElementById('csv-file').addEventListener('change', previewCSV);
+            
+            // Selección de estudiante para preguntas
+            document.getElementById('student-select').addEventListener('change', function() {
+                const studentDni = this.value;
+                if (studentDni) {
+                    document.getElementById('questions-container').style.display = 'block';
+                    renderQuestions(studentDni);
+                    updateStudentInfo(studentDni);
+                } else {
+                    document.getElementById('questions-container').style.display = 'none';
+                }
+            });
+            
+            // Guardar respuestas
+            document.getElementById('save-answers').addEventListener('click', saveAnswers);
+            
+            // Guardar configuración
+            document.getElementById('save-config').addEventListener('click', saveCourseConfig);
+            
+            // Guardar umbrales
+            document.getElementById('save-thresholds').addEventListener('click', saveThresholds);
+            
+            // Guardar orden
+            document.getElementById('save-order').addEventListener('click', saveQuestionsOrder);
+            
+            // Controles de orden
+            document.getElementById('auto-sort').addEventListener('click', autoSortByCourse);
+            document.getElementById('reverse-order').addEventListener('click', reverseOrder);
+            document.getElementById('move-up').addEventListener('click', moveSelectedUp);
+            document.getElementById('move-down').addEventListener('click', moveSelectedDown);
+            document.getElementById('move-top').addEventListener('click', moveSelectedToTop);
+            document.getElementById('move-bottom').addEventListener('click', moveSelectedToBottom);
+            
+            // Filtros
+            document.getElementById('apply-filters').addEventListener('click', applyFilters);
+            document.getElementById('clear-filters').addEventListener('click', clearFilters);
+            document.getElementById('filter-grade').addEventListener('change', updateSectionOptions);
+            
+            // Filtros de resultados
+            document.getElementById('apply-results-filters').addEventListener('click', applyResultsFilters);
+            document.getElementById('clear-results-filters').addEventListener('click', clearResultsFilters);
+            document.getElementById('results-filter-grade').addEventListener('change', updateResultsSectionOptions);
+            
+            // Filtros de vista de todas las sedes
+            document.getElementById('apply-view-filters').addEventListener('click', applyViewFilters);
+            document.getElementById('clear-view-filters').addEventListener('click', clearViewFilters);
+            
+            // Filtros de análisis
+            document.getElementById('apply-analysis-filters').addEventListener('click', applyAnalysisFilters);
+            document.getElementById('clear-analysis-filters').addEventListener('click', clearAnalysisFilters);
+            
+            // Exportación a Excel
+            document.getElementById('export-excel').addEventListener('click', exportToExcel);
+            document.getElementById('export-summary').addEventListener('click', exportSummaryToExcel);
+            document.getElementById('export-filtered').addEventListener('click', exportFilteredToExcel);
+            
+            // Actualizar umbrales cuando cambien los inputs
+            document.querySelectorAll('#threshold-config input').forEach(input => {
+                input.addEventListener('change', updateThresholdsSummary);
+            });
+
+            // Sincronizar selección de grado cuando cambie el select oculto
+            document.getElementById('student-grade').addEventListener('change', syncGradeSelection);
+        }
+        
+        function showSedeSelector() {
+            console.log("Mostrando selector de sede");
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('sede-selector').style.display = 'block';
+        }
+        
+        function showAdminLogin() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('login-modal').style.display = 'flex';
+        }
+        
+        function hideAdminLogin() {
+            document.getElementById('login-modal').style.display = 'none';
+            document.getElementById('admin-username').value = '';
+            document.getElementById('admin-password').value = '';
+        }
+        
+        function loginAdmin() {
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+            
+            if (username === adminCredentials.username && password === adminCredentials.password) {
+                isAdmin = true;
+                document.getElementById('user-info').textContent = 'Usuario: Administrador';
+                document.getElementById('main-header').classList.add('admin-header');
+                document.getElementById('header-subtitle').textContent = 'Panel Administrativo - Vista Consolidada General';
+                hideAdminLogin();
+                
+                // Ocultar elementos específicos de sede
+                document.getElementById('sede-info').style.display = 'none';
+                
+                showNotification('Acceso administrativo concedido', 'success');
+                
+                // Mostrar sistema principal
+                document.getElementById('main-system').style.display = 'block';
+                document.getElementById('user-profile').style.display = 'flex';
+                
+                // Configurar vista consolidada
+                setupConsolidatedView();
+            } else {
+                showNotification('Credenciales incorrectas', 'error');
+            }
+        }
+        
+        function setupConsolidatedView() {
+            // Ocultar tabs de sede individual
+            document.getElementById('tab-config').style.display = 'none';
+            document.getElementById('tab-order').style.display = 'none';
+            document.getElementById('tab-thresholds').style.display = 'none';
+            document.getElementById('tab-students').style.display = 'none';
+            document.getElementById('tab-questions').style.display = 'none';
+            document.getElementById('tab-results').style.display = 'none';
+            
+            // Mostrar tabs de vista consolidada
+            document.getElementById('consolidated-tab').style.display = 'block';
+            document.getElementById('consolidated-tab-students').style.display = 'block';
+            document.getElementById('consolidated-tab-analysis').style.display = 'block';
+            
+            // Mostrar panel consolidado
+            document.getElementById('consolidated-panel').style.display = 'block';
+            
+            // Activar primera pestaña de vista consolidada
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            document.getElementById('consolidated-tab').classList.add('active');
+            document.getElementById('sedes-view-tab').classList.add('active');
+            
+            // Actualizar datos
+            updateConsolidatedPanel();
+            updateSedesView();
+            updateViewFilterOptions();
+            updateAnalysisFilterOptions();
+        }
+        
+        function setupSedeIndividualView() {
+            console.log("Configurando vista individual para sede:", currentSede);
+            
+            // Mostrar tabs de sede individual
+            document.getElementById('tab-config').style.display = 'block';
+            document.getElementById('tab-order').style.display = 'block';
+            document.getElementById('tab-thresholds').style.display = 'block';
+            document.getElementById('tab-students').style.display = 'block';
+            document.getElementById('tab-questions').style.display = 'block';
+            document.getElementById('tab-results').style.display = 'block';
+            
+            // Ocultar tabs de vista consolidada
+            document.getElementById('consolidated-tab').style.display = 'none';
+            document.getElementById('consolidated-tab-students').style.display = 'none';
+            document.getElementById('consolidated-tab-analysis').style.display = 'none';
+            
+            // Ocultar panel consolidado
+            document.getElementById('consolidated-panel').style.display = 'none';
+            
+            // Activar primera pestaña de sede individual
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            document.getElementById('tab-config').classList.add('active');
+            document.getElementById('config-tab').classList.add('active');
+        }
+        
+        function logout() {
+            if (isAdmin || isConsolidatedView) {
+                isAdmin = false;
+                isConsolidatedView = false;
+                document.getElementById('user-info').textContent = 'Usuario: Sede Local';
+                document.getElementById('main-header').classList.remove('admin-header', 'consolidated-header');
+                document.getElementById('header-subtitle').textContent = 'Gestión de calificaciones por sede educativa';
+                
+                // Volver a la pantalla de login inicial
+                document.getElementById('main-system').style.display = 'none';
+                document.getElementById('login-screen').style.display = 'block';
+                document.getElementById('user-profile').style.display = 'none';
+                
+                showNotification('Sesión cerrada', 'success');
+            } else {
+                changeSede();
+            }
+        }
+        
+        function renderGradeOptions() {
+            const container = document.getElementById('grade-options');
+            const hiddenSelect = document.getElementById('student-grade');
+            
+            // Limpiar contenedores
+            container.innerHTML = '';
+            hiddenSelect.innerHTML = '<option value="">Seleccione un grado</option>';
+            
+            grades.forEach(grade => {
+                // Crear opción para el select oculto
+                const option = document.createElement('option');
+                option.value = grade.value;
+                option.textContent = grade.label;
+                hiddenSelect.appendChild(option);
+                
+                // Crear opción visual
+                const gradeOption = document.createElement('div');
+                gradeOption.className = `grade-option ${grade.special ? 'quinto-especial' : ''}`;
+                gradeOption.setAttribute('data-value', grade.value);
+                gradeOption.textContent = grade.label;
+                
+                gradeOption.addEventListener('click', function() {
+                    // Remover selección anterior
+                    document.querySelectorAll('.grade-option').forEach(option => {
+                        option.classList.remove('selected');
+                    });
+                    
+                    // Seleccionar actual
+                    this.classList.add('selected');
+                    selectedGrade = grade.value;
+                    
+                    // Actualizar select oculto
+                    document.getElementById('student-grade').value = grade.value;
+                });
+                
+                container.appendChild(gradeOption);
+            });
+
+            // Sincronizar selección inicial
+            syncGradeSelection();
+        }
+
+        function syncGradeSelection() {
+            const hiddenSelect = document.getElementById('student-grade');
+            const selectedValue = hiddenSelect.value;
+            
+            // Remover todas las selecciones visuales
+            document.querySelectorAll('.grade-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Aplicar selección visual si hay un valor seleccionado
+            if (selectedValue) {
+                const selectedOption = document.querySelector(`.grade-option[data-value="${selectedValue}"]`);
+                if (selectedOption) {
+                    selectedOption.classList.add('selected');
+                }
+            }
+        }
+        
+        function enterSystem() {
+    const sedeSelect = document.getElementById('sede');
+    const selectedSede = sedeSelect.value;
+    
+    if (!selectedSede) {
+        showNotification('Por favor, seleccione una sede', 'error');
+        return;
+    }
+    
+    currentSede = selectedSede;
+    console.log("Sede seleccionada:", currentSede);
+    
+    if (currentSede === 'todas_las_sedes') {
+        // Modo vista consolidada
+        isConsolidatedView = true;
+        document.getElementById('user-info').textContent = 'Usuario: Vista Consolidada';
+        document.getElementById('consolidated-panel').style.display = 'block';
+        document.getElementById('main-header').classList.add('consolidated-header');
+        document.getElementById('header-subtitle').textContent = 'Vista Consolidada - Todas las Sedes';
+        document.getElementById('sede-title').textContent = 'Vista Actual:';
+        document.getElementById('current-sede').textContent = 'Todas las Sedes (Solo Lectura)';
+        document.getElementById('sede-info').classList.add('consolidated-info');
+        
+        // Mostrar advertencias en las pestañas de edición
+        document.getElementById('config-consolidated-warning').style.display = 'block';
+        document.getElementById('order-consolidated-warning').style.display = 'block';
+        document.getElementById('students-consolidated-warning').style.display = 'block';
+        document.getElementById('csv-consolidated-warning').style.display = 'block';
+        
+        // Deshabilitar botones de guardar
+        document.getElementById('save-config').disabled = true;
+        document.getElementById('save-order').disabled = true;
+        document.getElementById('save-thresholds').disabled = true;
+        document.getElementById('student-form').querySelector('button').disabled = true;
+        document.getElementById('import-csv').disabled = true;
+        
+        // Configurar vista consolidada
+        setupConsolidatedView();
+        
+        // Actualizar datos en tiempo real
+        updateConsolidatedPanel();
+        updateSedesView();
+        updateAllStudentsView();
+        
+        // Mostrar sistema principal
+        document.getElementById('sede-selector').style.display = 'none';
+        document.getElementById('sede-info').style.display = 'block';
+        document.getElementById('main-system').style.display = 'block';
+        document.getElementById('user-profile').style.display = 'flex';
+        
+        showNotification('Modo vista consolidada activado', 'success');
+    } else {
+        // **CORRECCIÓN: Modo sede individual - ACCESO DIRECTO AL SISTEMA**
+        isConsolidatedView = false;
+        localStorage.setItem('currentSede', currentSede);
+        
+        console.log("Iniciando carga de datos para sede:", currentSede);
+        
+        // Cargar datos de la sede
+        loadSedeData();
+        
+        // Configurar vista individual
+        setupSedeIndividualView();
+        
+        // Actualizar información de la sede
+        updateSedeInfo();
+        
+        // **CORRECCIÓN: Mostrar elementos correctamente**
+        document.getElementById('sede-selector').style.display = 'none';
+        document.getElementById('sede-info').style.display = 'block';
+        document.getElementById('main-system').style.display = 'block';
+        document.getElementById('user-profile').style.display = 'flex';
+        
+        // Restaurar elementos a estado normal
+        document.getElementById('sede-info').classList.remove('consolidated-info');
+        document.getElementById('config-consolidated-warning').style.display = 'none';
+        document.getElementById('order-consolidated-warning').style.display = 'none';
+        document.getElementById('students-consolidated-warning').style.display = 'none';
+        document.getElementById('csv-consolidated-warning').style.display = 'none';
+        
+        // Habilitar botones de guardar
+        document.getElementById('save-config').disabled = false;
+        document.getElementById('save-order').disabled = false;
+        document.getElementById('save-thresholds').disabled = false;
+        document.getElementById('student-form').querySelector('button').disabled = false;
+        document.getElementById('import-csv').disabled = false;
+        
+        showNotification(`Bienvenido a la sede ${getSedeName(currentSede)} - Ya puede cargar notas`, 'success');
+        
+        // **CORRECCIÓN: Forzar actualización de la interfaz**
+        setTimeout(() => {
+            renderStudents();
+            updateFilterOptions();
+            updateResults();
+        }, 100);
+    }
+}
+        
+        function changeSede() {
+            currentSede = '';
+            isConsolidatedView = false;
+            localStorage.removeItem('currentSede');
+            
+            document.getElementById('main-system').style.display = 'none';
+            document.getElementById('sede-info').style.display = 'none';
+            document.getElementById('sede-selector').style.display = 'block';
+            document.getElementById('user-profile').style.display = 'none';
+            
+            // Restaurar elementos a su estado normal
+            document.getElementById('sede-info').classList.remove('consolidated-info');
+            document.getElementById('config-consolidated-warning').style.display = 'none';
+            document.getElementById('order-consolidated-warning').style.display = 'none';
+            document.getElementById('students-consolidated-warning').style.display = 'none';
+            document.getElementById('csv-consolidated-warning').style.display = 'none';
+            
+            // Habilitar botones de guardar
+            document.getElementById('save-config').disabled = false;
+            document.getElementById('save-order').disabled = false;
+            document.getElementById('save-thresholds').disabled = false;
+            document.getElementById('student-form').querySelector('button').disabled = false;
+            document.getElementById('import-csv').disabled = false;
+            
+            showNotification('Sede cambiada exitosamente', 'success');
+        }
+        
+       function loadSedeData() {
+    console.log("Cargando datos para sede:", currentSede);
+    
+    try {
+        // Cargar datos específicos de la sede
+        students = JSON.parse(localStorage.getItem(`students_${currentSede}`)) || [];
+        answers = JSON.parse(localStorage.getItem(`answers_${currentSede}`)) || {};
+        courseConfig = JSON.parse(localStorage.getItem(`courseConfig_${currentSede}`)) || {};
+        questions = JSON.parse(localStorage.getItem(`questions_${currentSede}`)) || [];
+        
+        console.log("Estudiantes cargados:", students.length);
+        console.log("Respuestas cargadas:", Object.keys(answers).length);
+        console.log("Configuración de cursos:", courseConfig);
+        console.log("Preguntas cargadas:", questions.length);
+        
+        // Cargar umbrales (compartidos entre sedes)
+        const savedThresholds = JSON.parse(localStorage.getItem('thresholds'));
+        if (savedThresholds) {
+            thresholds = savedThresholds;
+        }
+        
+        // Inicializar configuración de cursos si no existe
+        if (Object.keys(courseConfig).length === 0) {
+            console.log("Inicializando configuración por defecto");
+            courses.forEach(course => {
+                courseConfig[course] = 0;
+            });
+            localStorage.setItem(`courseConfig_${currentSede}`, JSON.stringify(courseConfig));
+        }
+        
+        // Generar preguntas si es necesario
+        const savedConfig = localStorage.getItem(`courseConfigHash_${currentSede}`);
+        const currentConfig = JSON.stringify(courseConfig);
+        
+        if (!savedConfig || savedConfig !== currentConfig) {
+            console.log("Generando preguntas basadas en configuración");
+            generateQuestions();
+            localStorage.setItem(`courseConfigHash_${currentSede}`, currentConfig);
+        }
+        
+        // **CORRECCIÓN: Actualizar interfaz de manera más robusta**
+        setTimeout(() => {
+            updateSedeInfo();
+            renderCourseConfig();
+            renderQuestionsOrder();
+            renderThresholds();
+            renderStudents();
+            updateFilterOptions();
+            applyFilters();
+            updateResults();
+            updateResultsFilterOptions();
+        }, 50);
+        
+        console.log("Datos cargados exitosamente para:", currentSede);
+        
+    } catch (error) {
+        console.error("Error cargando datos:", error);
+        showNotification('Error al cargar datos de la sede', 'error');
+    }
+}
+
+// Función para verificar el estado actual del sistema (útil para debugging)
+function checkSystemStatus() {
+    console.log("=== ESTADO DEL SISTEMA ===");
+    console.log("Sede actual:", currentSede);
+    console.log("Modo consolidado:", isConsolidatedView);
+    console.log("Es admin:", isAdmin);
+    console.log("Estudiantes cargados:", students.length);
+    console.log("Preguntas cargadas:", questions.length);
+    console.log("Elementos visibles:");
+    console.log("- Sede selector:", document.getElementById('sede-selector').style.display);
+    console.log("- Sede info:", document.getElementById('sede-info').style.display);
+    console.log("- Main system:", document.getElementById('main-system').style.display);
+    console.log("==========================");
+}
+
+// Puedes llamar a esta función para debuggear
+// checkSystemStatus();
+        
+        function updateSedeInfo() {
+            document.getElementById('current-sede').textContent = getSedeName(currentSede);
+            document.getElementById('current-sede-students').textContent = getSedeName(currentSede);
+            document.getElementById('current-sede-results').textContent = getSedeName(currentSede);
+        }
+        
+        function getSedeName(sedeKey) {
+            if (sedeKey === 'todas_las_sedes') {
+                return 'Todas las Sedes';
+            }
+            const sede = sedes.find(s => s.key === sedeKey);
+            return sede ? sede.name : 'Sede Desconocida';
+        }
+        
+        // Funciones de configuración de cursos
+        function renderCourseConfig() {
+            const container = document.getElementById('course-config');
+            container.innerHTML = '';
+            
+            let totalQuestions = 0;
+            
+            courses.forEach(course => {
+                const courseItem = document.createElement('div');
+                courseItem.className = 'course-item';
+                courseItem.innerHTML = `
+                    <div class="course-header">${course}</div>
+                    <div class="form-group">
+                        <label for="course-${course}">Cantidad de preguntas</label>
+                        <input type="number" min="0" max="50" id="course-${course}" 
+                               value="${courseConfig[course] || 0}" 
+                               ${isConsolidatedView ? 'disabled' : ''}>
+                    </div>
+                `;
+                container.appendChild(courseItem);
+                
+                // Actualizar total
+                totalQuestions += parseInt(courseConfig[course] || 0);
+                
+                // Agregar event listener para actualizar en tiempo real
+                if (!isConsolidatedView) {
+                    const input = document.getElementById(`course-${course}`);
+                    input.addEventListener('change', function() {
+                        updateConfigSummary();
+                    });
+                }
+            });
+            
+            updateConfigSummary();
+        }
+        
+        function updateConfigSummary() {
+            let totalQuestions = 0;
+            
+            courses.forEach(course => {
+                const input = document.getElementById(`course-${course}`);
+                if (input) {
+                    totalQuestions += parseInt(input.value) || 0;
+                }
+            });
+            
+            document.getElementById('total-questions').textContent = totalQuestions;
+            
+            // Actualizar estado de la configuración
+            const statusElement = document.getElementById('config-status');
+            if (totalQuestions === 0) {
+                statusElement.textContent = '⚠ No hay preguntas configuradas';
+                statusElement.style.color = 'var(--danger)';
+            } else if (totalQuestions < 10) {
+                statusElement.textContent = 'ℹ Configuración mínima';
+                statusElement.style.color = 'var(--warning)';
+            } else {
+                statusElement.textContent = '✓ Configuración adecuada';
+                statusElement.style.color = 'var(--secondary)';
+            }
+        }
+        
+        function saveCourseConfig() {
+            if (isConsolidatedView) return;
+            
+            const newConfig = {};
+            let totalQuestions = 0;
+            
+            courses.forEach(course => {
+                const input = document.getElementById(`course-${course}`);
+                const value = parseInt(input.value) || 0;
+                newConfig[course] = value;
+                totalQuestions += value;
+            });
+            
+            courseConfig = newConfig;
+            localStorage.setItem(`courseConfig_${currentSede}`, JSON.stringify(courseConfig));
+            
+            // Regenerar preguntas
+            generateQuestions();
+            localStorage.setItem(`courseConfigHash_${currentSede}`, JSON.stringify(courseConfig));
+            
+            showNotification('Configuración guardada exitosamente', 'success');
+            // Actualizar vista consolidada si está activa
+            refreshConsolidatedData();
+        }
+        
+        function generateQuestions() {
+            questions = [];
+            let questionId = 1;
+            
+            courses.forEach(course => {
+                const count = courseConfig[course] || 0;
+                for (let i = 1; i <= count; i++) {
+                    questions.push({
+                        id: questionId,
+                        course: course,
+                        description: `P${questionId} - ${course}`
+                    });
+                    questionId++;
+                }
+            });
+            
+            localStorage.setItem(`questions_${currentSede}`, JSON.stringify(questions));
+            
+            // Actualizar interfaz relacionada
+            renderQuestionsOrder();
+            updateThresholdsSummary();
+        }
+        
+        // Funciones de orden de preguntas
+        function renderQuestionsOrder() {
+            const container = document.getElementById('questions-order-list');
+            container.innerHTML = '';
+            
+            questions.forEach((question, index) => {
+                const orderItem = document.createElement('div');
+                orderItem.className = 'order-item';
+                orderItem.setAttribute('data-id', question.id);
+                orderItem.innerHTML = `
+                    <div class="order-handle">☰</div>
+                    <div class="order-number">${index + 1}</div>
+                    <div class="order-course">${question.course}</div>
+                    <div class="order-description">${question.description}</div>
+                    <div class="order-actions">
+                        <button class="btn-secondary select-order" data-id="${question.id}">Seleccionar</button>
+                    </div>
+                `;
+                container.appendChild(orderItem);
+                
+                // Event listener para selección
+                const selectButton = orderItem.querySelector('.select-order');
+                selectButton.addEventListener('click', function() {
+                    selectOrderItem(question.id);
+                });
+            });
+        }
+        
+        function selectOrderItem(questionId) {
+            // Deseleccionar anterior
+            if (selectedOrderItem) {
+                const prevElement = document.querySelector(`.order-item[data-id="${selectedOrderItem}"]`);
+                if (prevElement) prevElement.style.backgroundColor = '';
+            }
+            
+            // Seleccionar nuevo
+            selectedOrderItem = questionId;
+            const element = document.querySelector(`.order-item[data-id="${questionId}"]`);
+            if (element) {
+                element.style.backgroundColor = '#e8f4fd';
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+        
+        function autoSortByCourse() {
+            if (isConsolidatedView) return;
+            
+            questions.sort((a, b) => {
+                return courses.indexOf(a.course) - courses.indexOf(b.course);
+            });
+            
+            renderQuestionsOrder();
+            showNotification('Preguntas ordenadas por curso', 'success');
+        }
+        
+        function reverseOrder() {
+            if (isConsolidatedView) return;
+            
+            questions.reverse();
+            renderQuestionsOrder();
+            showNotification('Orden de preguntas invertido', 'success');
+        }
+        
+        function moveSelectedUp() {
+            if (!selectedOrderItem || isConsolidatedView) return;
+            
+            const index = questions.findIndex(q => q.id === selectedOrderItem);
+            if (index > 0) {
+                // Intercambiar con el elemento anterior
+                [questions[index - 1], questions[index]] = [questions[index], questions[index - 1]];
+                renderQuestionsOrder();
+                selectOrderItem(selectedOrderItem);
+            }
+        }
+        
+        function moveSelectedDown() {
+            if (!selectedOrderItem || isConsolidatedView) return;
+            
+            const index = questions.findIndex(q => q.id === selectedOrderItem);
+            if (index < questions.length - 1) {
+                // Intercambiar con el elemento siguiente
+                [questions[index], questions[index + 1]] = [questions[index + 1], questions[index]];
+                renderQuestionsOrder();
+                selectOrderItem(selectedOrderItem);
+            }
+        }
+        
+        function moveSelectedToTop() {
+            if (!selectedOrderItem || isConsolidatedView) return;
+            
+            const index = questions.findIndex(q => q.id === selectedOrderItem);
+            if (index > 0) {
+                const item = questions.splice(index, 1)[0];
+                questions.unshift(item);
+                renderQuestionsOrder();
+                selectOrderItem(selectedOrderItem);
+            }
+        }
+        
+        function moveSelectedToBottom() {
+            if (!selectedOrderItem || isConsolidatedView) return;
+            
+            const index = questions.findIndex(q => q.id === selectedOrderItem);
+            if (index < questions.length - 1) {
+                const item = questions.splice(index, 1)[0];
+                questions.push(item);
+                renderQuestionsOrder();
+                selectOrderItem(selectedOrderItem);
+            }
+        }
+        
+        function saveQuestionsOrder() {
+            if (isConsolidatedView) return;
+            
+            localStorage.setItem(`questions_${currentSede}`, JSON.stringify(questions));
+            showNotification('Orden de preguntas guardado', 'success');
+        }
+        
+        // Funciones de umbrales
+        function renderThresholds() {
+            document.getElementById('threshold-inicio-min').value = thresholds.inicio.min;
+            document.getElementById('threshold-inicio-max').value = thresholds.inicio.max;
+            document.getElementById('threshold-proceso-min').value = thresholds.proceso.min;
+            document.getElementById('threshold-proceso-max').value = thresholds.proceso.max;
+            document.getElementById('threshold-logrado-min').value = thresholds.logrado.min;
+            document.getElementById('threshold-logrado-max').value = thresholds.logrado.max;
+            document.getElementById('threshold-destacado-min').value = thresholds.destacado.min;
+            document.getElementById('threshold-destacado-max').value = thresholds.destacado.max;
+            
+            updateThresholdsSummary();
+        }
+        
+        function updateThresholdsSummary() {
+            const totalQuestions = questions.length;
+            document.getElementById('threshold-total-questions').textContent = totalQuestions;
+            
+            const summaryContainer = document.getElementById('thresholds-summary');
+            summaryContainer.innerHTML = '';
+            
+            if (totalQuestions === 0) {
+                summaryContainer.innerHTML = '<p style="color: var(--danger);">No hay preguntas configuradas</p>';
+                return;
+            }
+            
+            const levels = [
+                { key: 'inicio', label: 'En Inicio', color: 'danger' },
+                { key: 'proceso', label: 'En Proceso', color: 'warning' },
+                { key: 'logrado', label: 'Logrado', color: 'secondary' },
+                { key: 'destacado', label: 'Logro Destacado', color: 'admin' }
+            ];
+            
+            levels.forEach(level => {
+                const minPercent = thresholds[level.key].min;
+                const maxPercent = thresholds[level.key].max;
+                const minQuestions = Math.ceil((minPercent / 100) * totalQuestions);
+                const maxQuestions = Math.floor((maxPercent / 100) * totalQuestions);
+                
+                const levelDiv = document.createElement('div');
+                levelDiv.style.marginBottom = '10px';
+                levelDiv.style.padding = '10px';
+                levelDiv.style.borderLeft = `4px solid var(--${level.color})`;
+                levelDiv.style.backgroundColor = '#f8f9fa';
+                
+                levelDiv.innerHTML = `
+                    <strong>${level.label}:</strong> 
+                    ${minPercent}% - ${maxPercent}% 
+                    (${minQuestions} - ${maxQuestions} preguntas correctas de ${totalQuestions})
+                `;
+                
+                summaryContainer.appendChild(levelDiv);
+            });
+        }
+        
+        function saveThresholds() {
+            if (isConsolidatedView) return;
+            
+            thresholds = {
+                inicio: {
+                    min: parseFloat(document.getElementById('threshold-inicio-min').value) || 0,
+                    max: parseFloat(document.getElementById('threshold-inicio-max').value) || 14.7
+                },
+                proceso: {
+                    min: parseFloat(document.getElementById('threshold-proceso-min').value) || 14.7,
+                    max: parseFloat(document.getElementById('threshold-proceso-max').value) || 51.5
+                },
+                logrado: {
+                    min: parseFloat(document.getElementById('threshold-logrado-min').value) || 51.5,
+                    max: parseFloat(document.getElementById('threshold-logrado-max').value) || 75
+                },
+                destacado: {
+                    min: parseFloat(document.getElementById('threshold-destacado-min').value) || 75,
+                    max: parseFloat(document.getElementById('threshold-destacado-max').value) || 100
+                }
+            };
+            
+            localStorage.setItem('thresholds', JSON.stringify(thresholds));
+            updateThresholdsSummary();
+            showNotification('Umbrales guardados exitosamente', 'success');
+        }
+        
+        // Funciones de gestión de estudiantes
+        function addStudent() {
+            if (isConsolidatedView) return;
+            
+            const dni = document.getElementById('student-dni').value.trim();
+            const name = document.getElementById('student-name').value.trim();
+            const grade = document.getElementById('student-grade').value;
+            const section = document.getElementById('student-section').value.trim();
+            
+            // Validaciones
+            if (!dni || !name || !grade || !section) {
+                showNotification('Por favor, complete todos los campos', 'error');
+                return;
+            }
+            
+            if (!/^\d{8}$/.test(dni)) {
+                showNotification('El DNI debe tener 8 dígitos numéricos', 'error');
+                return;
+            }
+            
+            // Verificar si el estudiante ya existe
+            if (students.some(student => student.dni === dni)) {
+                showNotification('Ya existe un estudiante con este DNI', 'error');
+                return;
+            }
+            
+            // Agregar estudiante
+            const gradeLabel = grades.find(g => g.value === grade)?.label || grade;
+            const newStudent = {
+                dni,
+                name,
+                grade,
+                gradeLabel,
+                section
+            };
+            
+            students.push(newStudent);
+            localStorage.setItem(`students_${currentSede}`, JSON.stringify(students));
+            
+            // Limpiar formulario
+            document.getElementById('student-form').reset();
+            document.querySelectorAll('.grade-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            selectedGrade = '';
+            
+            // Actualizar interfaz
+            renderStudents();
+            updateFilterOptions();
+            
+            showNotification('Estudiante agregado exitosamente', 'success');
+            // Actualizar vista consolidada si está activa
+            refreshConsolidatedData();
+        }
+        
+        function renderStudents() {
+            const tbody = document.getElementById('students-list');
+            tbody.innerHTML = '';
+            
+            students.forEach(student => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${student.dni}</td>
+                    <td>${student.name}</td>
+                    <td>${student.gradeLabel}</td>
+                    <td>${student.section}</td>
+                    <td>
+                        <button class="btn-warning delete-student" data-dni="${student.dni}">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            // Agregar event listeners para eliminar
+            document.querySelectorAll('.delete-student').forEach(button => {
+                button.addEventListener('click', function() {
+                    const dni = this.getAttribute('data-dni');
+                    deleteStudent(dni);
+                });
+            });
+        }
+        
+        function deleteStudent(dni) {
+            if (isConsolidatedView) return;
+            
+            if (confirm('¿Está seguro de que desea eliminar este estudiante?')) {
+                students = students.filter(student => student.dni !== dni);
+                localStorage.setItem(`students_${currentSede}`, JSON.stringify(students));
+                
+                // Eliminar también sus respuestas
+                if (answers[dni]) {
+                    delete answers[dni];
+                    localStorage.setItem(`answers_${currentSede}`, JSON.stringify(answers));
+                }
+                
+                renderStudents();
+                updateFilterOptions();
+                applyFilters();
+                updateResults();
+                
+                showNotification('Estudiante eliminado exitosamente', 'success');
+                // Actualizar vista consolidada si está activa
+                refreshConsolidatedData();
+            }
+        }
+        
+        // Funciones de importación CSV
+        function previewCSV() {
+            const fileInput = document.getElementById('csv-file');
+            const preview = document.getElementById('csv-preview');
+            const previewContent = document.getElementById('preview-content');
+            
+            if (!fileInput.files.length) return;
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const csv = e.target.result;
+                const lines = csv.split('\n');
+                
+                previewContent.innerHTML = '';
+                preview.style.display = 'block';
+                
+                // Mostrar primeras 10 líneas como vista previa
+                const table = document.createElement('table');
+                table.style.width = '100%';
+                table.style.fontSize = '12px';
+                
+                lines.slice(0, 11).forEach((line, index) => {
+                    const row = document.createElement('tr');
+                    const cells = line.split(',');
+                    
+                    cells.forEach(cell => {
+                        const td = document.createElement(index === 0 ? 'th' : 'td');
+                        td.textContent = cell.trim();
+                        td.style.padding = '5px';
+                        td.style.border = '1px solid #ddd';
+                        row.appendChild(td);
+                    });
+                    
+                    table.appendChild(row);
+                });
+                
+                previewContent.appendChild(table);
+                
+                if (lines.length > 11) {
+                    const moreInfo = document.createElement('p');
+                    moreInfo.textContent = `... y ${lines.length - 11} líneas más`;
+                    moreInfo.style.fontSize = '12px';
+                    moreInfo.style.fontStyle = 'italic';
+                    previewContent.appendChild(moreInfo);
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        function importCSV() {
+            if (isConsolidatedView) return;
+            
+            const fileInput = document.getElementById('csv-file');
+            if (!fileInput.files.length) {
+                showNotification('Por favor, seleccione un archivo CSV', 'error');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const csv = e.target.result;
+                const lines = csv.split('\n');
+                let imported = 0;
+                let errors = 0;
+                
+                lines.forEach(line => {
+                    if (!line.trim()) return;
+                    
+                    const cells = line.split(',').map(cell => cell.trim());
+                    if (cells.length < 4) {
+                        errors++;
+                        return;
+                    }
+                    
+                    const [dni, name, grade, section] = cells;
+                    
+                    // Validaciones
+                    if (!dni || !name || !grade || !section) {
+                        errors++;
+                        return;
+                    }
+                    
+                    if (!/^\d{8}$/.test(dni)) {
+                        errors++;
+                        return;
+                    }
+                    
+                    // Verificar si ya existe
+                    if (students.some(student => student.dni === dni)) {
+                        errors++;
+                        return;
+                    }
+                    
+                    // Agregar estudiante
+                    const gradeLabel = grades.find(g => g.value === grade)?.label || grade;
+                    const newStudent = {
+                        dni,
+                        name,
+                        grade,
+                        gradeLabel,
+                        section
+                    };
+                    
+                    students.push(newStudent);
+                    imported++;
+                });
+                
+                if (imported > 0) {
+                    localStorage.setItem(`students_${currentSede}`, JSON.stringify(students));
+                    renderStudents();
+                    updateFilterOptions();
+                }
+                
+                // Mostrar resultados
+                let message = `Importación completada: ${imported} estudiantes importados`;
+                if (errors > 0) {
+                    message += `, ${errors} errores encontrados`;
+                }
+                
+                showNotification(message, imported > 0 ? 'success' : 'warning');
+                
+                // Limpiar formulario
+                fileInput.value = '';
+                document.getElementById('csv-preview').style.display = 'none';
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        function downloadTemplate() {
+            const template = `12345678,Juan Pérez,1ero,A
+87654321,María García,2do,B
+55555555,Carlos López,5to_pre,C`;
+            
+            const blob = new Blob([template], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'plantilla_estudiantes.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Funciones de filtros y selección de estudiantes
+        function updateFilterOptions() {
+            const gradeSelect = document.getElementById('filter-grade');
+            const sectionSelect = document.getElementById('filter-section');
+            const studentSelect = document.getElementById('student-select');
+            
+            // Limpiar opciones
+            gradeSelect.innerHTML = '<option value="">Todos los grados</option>';
+            sectionSelect.innerHTML = '<option value="">Todas las secciones</option>';
+            studentSelect.innerHTML = '<option value="">Seleccione un estudiante</option>';
+            
+            // Obtener opciones únicas
+            const grades = [...new Set(students.map(s => s.gradeLabel))];
+            const sections = [...new Set(students.map(s => s.section))];
+            
+            // Llenar grados
+            grades.forEach(grade => {
+                const option = document.createElement('option');
+                option.value = grade;
+                option.textContent = grade;
+                gradeSelect.appendChild(option);
+            });
+            
+            // Llenar secciones
+            sections.forEach(section => {
+                const option = document.createElement('option');
+                option.value = section;
+                option.textContent = section;
+                sectionSelect.appendChild(option);
+            });
+            
+            // Aplicar filtros actuales
+            if (currentFilters.grade) gradeSelect.value = currentFilters.grade;
+            if (currentFilters.section) sectionSelect.value = currentFilters.section;
+            
+            updateSectionOptions();
+            updateStudentSelect();
+        }
+        
+        function updateSectionOptions() {
+            const gradeFilter = document.getElementById('filter-grade').value;
+            const sectionSelect = document.getElementById('filter-section');
+            
+            // Limpiar secciones
+            sectionSelect.innerHTML = '<option value="">Todas las secciones</option>';
+            
+            if (!gradeFilter) {
+                // Todas las secciones de todos los grados
+                const allSections = [...new Set(students.map(s => s.section))];
+                allSections.forEach(section => {
+                    const option = document.createElement('option');
+                    option.value = section;
+                    option.textContent = section;
+                    sectionSelect.appendChild(option);
+                });
+            } else {
+                // Solo secciones del grado seleccionado
+                const gradeSections = [...new Set(
+                    students
+                        .filter(s => s.gradeLabel === gradeFilter)
+                        .map(s => s.section)
+                )];
+                gradeSections.forEach(section => {
+                    const option = document.createElement('option');
+                    option.value = section;
+                    option.textContent = section;
+                    sectionSelect.appendChild(option);
+                });
+            }
+            
+            // Aplicar filtro actual de sección si existe
+            if (currentFilters.section) {
+                const optionExists = [...sectionSelect.options].some(opt => opt.value === currentFilters.section);
+                if (optionExists) {
+                    sectionSelect.value = currentFilters.section;
+                } else {
+                    currentFilters.section = '';
+                }
+            }
+        }
+        
+        function updateStudentSelect() {
+            const studentSelect = document.getElementById('student-select');
+            const filteredStudents = getFilteredStudents();
+            
+            // Limpiar y llenar estudiantes
+            studentSelect.innerHTML = '<option value="">Seleccione un estudiante</option>';
+            
+            filteredStudents.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.dni;
+                option.textContent = `${student.name} (${student.dni}) - ${student.gradeLabel} ${student.section}`;
+                studentSelect.appendChild(option);
+            });
+        }
+        
+        function getFilteredStudents() {
+            return students.filter(student => {
+                if (currentFilters.grade && student.gradeLabel !== currentFilters.grade) return false;
+                if (currentFilters.section && student.section !== currentFilters.section) return false;
+                return true;
+            });
+        }
+        
+        function applyFilters() {
+            const gradeFilter = document.getElementById('filter-grade').value;
+            const sectionFilter = document.getElementById('filter-section').value;
+            
+            currentFilters = {
+                grade: gradeFilter,
+                section: sectionFilter
+            };
+            
+            updateStudentSelect();
+            updateFilterInfo();
+        }
+        
+        function clearFilters() {
+            document.getElementById('filter-grade').value = '';
+            document.getElementById('filter-section').value = '';
+            currentFilters = { grade: '', section: '' };
+            updateFilterOptions();
+            updateFilterInfo();
+        }
+        
+        function updateFilterInfo() {
+            const filterInfo = document.getElementById('filter-info');
+            const currentFiltersText = document.getElementById('current-filters');
+            
+            let filterText = 'Mostrando todos los estudiantes';
+            
+            if (currentFilters.grade && currentFilters.section) {
+                filterText = `Grado: ${currentFilters.grade}, Sección: ${currentFilters.section}`;
+            } else if (currentFilters.grade) {
+                filterText = `Grado: ${currentFilters.grade}, Todas las secciones`;
+            } else if (currentFilters.section) {
+                filterText = `Todos los grados, Sección: ${currentFilters.section}`;
+            }
+            
+            currentFiltersText.textContent = filterText;
+            filterInfo.style.display = 'block';
+        }
+        
+        // Funciones de registro de preguntas
+        function renderQuestions(studentDni) {
+            const container = document.getElementById('questions-grid');
+            container.innerHTML = '';
+            
+            document.getElementById('questions-count').textContent = questions.length;
+            
+            const studentAnswers = answers[studentDni] || {};
+            
+            questions.forEach(question => {
+                const questionItem = document.createElement('div');
+                questionItem.className = 'question-item';
+                questionItem.innerHTML = `
+                    <div class="question-header">${question.description}</div>
+                    <div class="question-course">Curso: ${question.course}</div>
+                    <input type="number" min="0" max="1" 
+                           class="question-input" 
+                           id="answer-${question.id}"
+                           value="${studentAnswers[question.id] || 0}"
+                           placeholder="0 o 1">
+                `;
+                container.appendChild(questionItem);
+            });
+        }
+        
+        function updateStudentInfo(studentDni) {
+            const student = students.find(s => s.dni === studentDni);
+            if (student) {
+                document.getElementById('student-selected-name').textContent = student.name;
+                document.getElementById('student-selected-dni').textContent = student.dni;
+                document.getElementById('student-selected-grade').textContent = student.gradeLabel;
+                document.getElementById('student-selected-section').textContent = student.section;
+            }
+        }
+        
+        function saveAnswers() {
+            const studentDni = document.getElementById('student-select').value;
+            if (!studentDni) {
+                showNotification('Por favor, seleccione un estudiante', 'error');
+                return;
+            }
+            
+            const studentAnswers = {};
+            let hasErrors = false;
+            
+            questions.forEach(question => {
+                const input = document.getElementById(`answer-${question.id}`);
+                const value = parseInt(input.value) || 0;
+                
+                if (value !== 0 && value !== 1) {
+                    input.style.borderColor = 'var(--danger)';
+                    hasErrors = true;
+                } else {
+                    input.style.borderColor = '';
+                    studentAnswers[question.id] = value;
+                }
+            });
+            
+            if (hasErrors) {
+                showNotification('Por favor, ingrese solo 0 o 1 en todas las preguntas', 'error');
+                return;
+            }
+            
+            answers[studentDni] = studentAnswers;
+            localStorage.setItem(`answers_${currentSede}`, JSON.stringify(answers));
+            
+            showNotification('Respuestas guardadas exitosamente', 'success');
+            // Actualizar vista consolidada si está activa
+            refreshConsolidatedData();
+        }
+        
+        // Funciones de resultados y análisis
+        function updateResults() {
+            updateResultsSummary();
+            updateResultsTable();
+        }
+        
+        function updateResultsSummary() {
+            const filteredStudents = getResultsFilteredStudents();
+            const levelCounts = { inicio: 0, proceso: 0, logrado: 0, destacado: 0 };
+            
+            filteredStudents.forEach(student => {
+                const level = calculateAchievementLevel(student.dni);
+                levelCounts[level]++;
+            });
+            
+            document.getElementById('count-inicio').textContent = levelCounts.inicio;
+            document.getElementById('count-proceso').textContent = levelCounts.proceso;
+            document.getElementById('count-logrado').textContent = levelCounts.logrado;
+            document.getElementById('count-destacado').textContent = levelCounts.destacado;
+        }
+        
+        function updateResultsTable() {
+            const tbody = document.getElementById('results-list');
+            tbody.innerHTML = '';
+            
+            const filteredStudents = getResultsFilteredStudents();
+            
+            filteredStudents.forEach(student => {
+                const studentAnswers = answers[student.dni] || {};
+                const totalScore = Object.values(studentAnswers).reduce((sum, score) => sum + score, 0);
+                const totalQuestions = questions.length;
+                const percentage = totalQuestions > 0 ? ((totalScore / totalQuestions) * 100).toFixed(1) : 0;
+                const achievementLevel = calculateAchievementLevel(student.dni);
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${student.name}</td>
+                    <td>${student.dni}</td>
+                    <td>${student.gradeLabel}</td>
+                    <td>${student.section}</td>
+                    <td>${totalScore}/${totalQuestions}</td>
+                    <td>${percentage}%</td>
+                    <td><span class="badge badge-${achievementLevel}">${getAchievementLabel(achievementLevel)}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        
+        function calculateAchievementLevel(studentDni) {
+            const studentAnswers = answers[studentDni] || {};
+            const totalScore = Object.values(studentAnswers).reduce((sum, score) => sum + score, 0);
+            const totalQuestions = questions.length;
+            
+            if (totalQuestions === 0) return 'inicio';
+            
+            const percentage = (totalScore / totalQuestions) * 100;
+            
+            if (percentage >= thresholds.destacado.min) return 'destacado';
+            if (percentage >= thresholds.logrado.min) return 'logrado';
+            if (percentage >= thresholds.proceso.min) return 'proceso';
+            return 'inicio';
+        }
+        
+        function getAchievementLabel(level) {
+            const labels = {
+                inicio: 'En Inicio',
+                proceso: 'En Proceso',
+                logrado: 'Logrado',
+                destacado: 'Logro Destacado'
+            };
+            return labels[level] || 'Desconocido';
+        }
+        
+        function getResultsFilteredStudents() {
+            return students.filter(student => {
+                // Filtro por grado
+                if (currentResultsFilters.grade && student.gradeLabel !== currentResultsFilters.grade) return false;
+                
+                // Filtro por sección
+                if (currentResultsFilters.section && student.section !== currentResultsFilters.section) return false;
+                
+                // Filtro por nivel de logro
+                if (currentResultsFilters.level) {
+                    const level = calculateAchievementLevel(student.dni);
+                    if (level !== currentResultsFilters.level) return false;
+                }
+                
+                return true;
+            });
+        }
+        
+        function updateResultsSectionOptions() {
+            const gradeFilter = document.getElementById('results-filter-grade').value;
+            const sectionSelect = document.getElementById('results-filter-section');
+            
+            // Limpiar secciones
+            sectionSelect.innerHTML = '<option value="">Todas las secciones</option>';
+            
+            if (!gradeFilter) {
+                // Todas las secciones de todos los grados
+                const allSections = [...new Set(students.map(s => s.section))];
+                allSections.forEach(section => {
+                    const option = document.createElement('option');
+                    option.value = section;
+                    option.textContent = section;
+                    sectionSelect.appendChild(option);
+                });
+            } else {
+                // Solo secciones del grado seleccionado
+                const gradeSections = [...new Set(
+                    students
+                        .filter(s => s.gradeLabel === gradeFilter)
+                        .map(s => s.section)
+                )];
+                gradeSections.forEach(section => {
+                    const option = document.createElement('option');
+                    option.value = section;
+                    option.textContent = section;
+                    sectionSelect.appendChild(option);
+                });
+            }
+            
+            // Aplicar filtro actual de sección si existe
+            if (currentResultsFilters.section) {
+                const optionExists = [...sectionSelect.options].some(opt => opt.value === currentResultsFilters.section);
+                if (optionExists) {
+                    sectionSelect.value = currentResultsFilters.section;
+                } else {
+                    currentResultsFilters.section = '';
+                }
+            }
+        }
+        
+        function applyResultsFilters() {
+            const gradeFilter = document.getElementById('results-filter-grade').value;
+            const sectionFilter = document.getElementById('results-filter-section').value;
+            const levelFilter = document.getElementById('results-filter-level').value;
+            
+            currentResultsFilters = {
+                grade: gradeFilter,
+                section: sectionFilter,
+                level: levelFilter
+            };
+            
+            updateResults();
+        }
+        
+        function clearResultsFilters() {
+            document.getElementById('results-filter-grade').value = '';
+            document.getElementById('results-filter-section').value = '';
+            document.getElementById('results-filter-level').value = '';
+            currentResultsFilters = { grade: '', section: '', level: '' };
+            updateResultsFilterOptions();
+            updateResults();
+        }
+        
+        // Funciones de exportación a Excel
+        function exportToExcel() {
+            const data = [];
+            
+            // Encabezados
+            data.push(['Sede', 'Estudiante', 'DNI', 'Grado', 'Sección', 'Puntaje Total', 'Porcentaje', 'Nivel de Logro']);
+            
+            // Datos de estudiantes
+            students.forEach(student => {
+                const studentAnswers = answers[student.dni] || {};
+                const totalScore = Object.values(studentAnswers).reduce((sum, score) => sum + score, 0);
+                const totalQuestions = questions.length;
+                const percentage = totalQuestions > 0 ? ((totalScore / totalQuestions) * 100).toFixed(1) : 0;
+                const achievementLevel = calculateAchievementLevel(student.dni);
+                
+                data.push([
+                    getSedeName(currentSede),
+                    student.name,
+                    student.dni,
+                    student.gradeLabel,
+                    student.section,
+                    `${totalScore}/${totalQuestions}`,
+                    `${percentage}%`,
+                    getAchievementLabel(achievementLevel)
+                ]);
+            });
+            
+            // Crear libro de trabajo
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Resultados');
+            
+            // Descargar archivo
+            const fileName = `resultados_${currentSede}_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+            
+            showNotification('Archivo Excel descargado exitosamente', 'success');
+        }
+        
+        function exportSummaryToExcel() {
+            const data = [];
+            
+            // Encabezados del resumen
+            data.push(['Resumen de Resultados - ' + getSedeName(currentSede)]);
+            data.push(['Fecha de exportación:', new Date().toLocaleString()]);
+            data.push(['Total de estudiantes:', students.length]);
+            data.push(['Total de preguntas:', questions.length]);
+            data.push([]);
+            
+            // Resumen por nivel de logro
+            data.push(['Nivel de Logro', 'Cantidad', 'Porcentaje']);
+            
+            const levelCounts = { inicio: 0, proceso: 0, logrado: 0, destacado: 0 };
+            students.forEach(student => {
+                const level = calculateAchievementLevel(student.dni);
+                levelCounts[level]++;
+            });
+            
+            Object.keys(levelCounts).forEach(level => {
+                const count = levelCounts[level];
+                const percentage = students.length > 0 ? ((count / students.length) * 100).toFixed(1) : 0;
+                data.push([getAchievementLabel(level), count, `${percentage}%`]);
+            });
+            
+            data.push([]);
+            
+            // Detalle por grado
+            data.push(['Resumen por Grado']);
+            data.push(['Grado', 'Total Estudiantes', 'En Inicio', 'En Proceso', 'Logrado', 'Logro Destacado']);
+            
+            const grades = [...new Set(students.map(s => s.gradeLabel))];
+            grades.forEach(grade => {
+                const gradeStudents = students.filter(s => s.gradeLabel === grade);
+                const gradeLevelCounts = { inicio: 0, proceso: 0, logrado: 0, destacado: 0 };
+                
+                gradeStudents.forEach(student => {
+                    const level = calculateAchievementLevel(student.dni);
+                    gradeLevelCounts[level]++;
+                });
+                
+                data.push([
+                    grade,
+                    gradeStudents.length,
+                    gradeLevelCounts.inicio,
+                    gradeLevelCounts.proceso,
+                    gradeLevelCounts.logrado,
+                    gradeLevelCounts.destacado
+                ]);
+            });
+            
+            // Crear libro de trabajo
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Resumen');
+            
+            // Descargar archivo
+            const fileName = `resumen_${currentSede}_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+            
+            showNotification('Resumen Excel descargado exitosamente', 'success');
+        }
+        
+        function exportFilteredToExcel() {
+            const filteredStudents = getResultsFilteredStudents();
+            
+            if (filteredStudents.length === 0) {
+                showNotification('No hay datos para exportar con los filtros actuales', 'warning');
+                return;
+            }
+            
+            const data = [];
+            
+            // Encabezados
+            data.push(['Sede', 'Estudiante', 'DNI', 'Grado', 'Sección', 'Puntaje Total', 'Porcentaje', 'Nivel de Logro']);
+            
+            // Información de filtros
+            let filterInfo = 'Todos los estudiantes';
+            if (currentResultsFilters.grade) filterInfo += `, Grado: ${currentResultsFilters.grade}`;
+            if (currentResultsFilters.section) filterInfo += `, Sección: ${currentResultsFilters.section}`;
+            if (currentResultsFilters.level) filterInfo += `, Nivel: ${getAchievementLabel(currentResultsFilters.level)}`;
+            
+            data.push(['Filtros aplicados:', filterInfo]);
+            data.push([]);
+            
+            // Datos filtrados
+            filteredStudents.forEach(student => {
+                const studentAnswers = answers[student.dni] || {};
+                const totalScore = Object.values(studentAnswers).reduce((sum, score) => sum + score, 0);
+                const totalQuestions = questions.length;
+                const percentage = totalQuestions > 0 ? ((totalScore / totalQuestions) * 100).toFixed(1) : 0;
+                const achievementLevel = calculateAchievementLevel(student.dni);
+                
+                data.push([
+                    getSedeName(currentSede),
+                    student.name,
+                    student.dni,
+                    student.gradeLabel,
+                    student.section,
+                    `${totalScore}/${totalQuestions}`,
+                    `${percentage}%`,
+                    getAchievementLabel(achievementLevel)
+                ]);
+            });
+            
+            // Crear libro de trabajo
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Resultados Filtrados');
+            
+            // Descargar archivo
+            const fileName = `resultados_filtrados_${currentSede}_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+            
+            showNotification('Datos filtrados exportados exitosamente', 'success');
+        }
+        
+        // Funciones de vista consolidada
+        function updateConsolidatedPanel() {
+            let totalStudents = 0;
+            let levelCounts = { inicio: 0, proceso: 0, logrado: 0, destacado: 0 };
+            let sedesWithData = 0;
+
+            // Recorrer todas las sedes para consolidar datos
+            sedes.forEach(sede => {
+                if (sede.key === 'todas_las_sedes') return;
+                
+                const sedeStudents = JSON.parse(localStorage.getItem(`students_${sede.key}`)) || [];
+                const sedeAnswers = JSON.parse(localStorage.getItem(`answers_${sede.key}`)) || {};
+                const sedeQuestions = JSON.parse(localStorage.getItem(`questions_${sede.key}`)) || [];
+                
+                if (sedeStudents.length > 0) {
+                    sedesWithData++;
+                }
+
+                sedeStudents.forEach(student => {
+                    totalStudents++;
+                    const level = calculateConsolidatedAchievementLevel(student.dni, sedeAnswers, sedeQuestions);
+                    levelCounts[level]++;
+                });
+            });
+
+            // Actualizar la interfaz
+            document.getElementById('consolidated-count-inicio').textContent = levelCounts.inicio;
+            document.getElementById('consolidated-percent-inicio').textContent = totalStudents > 0 ? 
+                `${((levelCounts.inicio / totalStudents) * 100).toFixed(1)}%` : '0%';
+
+            document.getElementById('consolidated-count-proceso').textContent = levelCounts.proceso;
+            document.getElementById('consolidated-percent-proceso').textContent = totalStudents > 0 ? 
+                `${((levelCounts.proceso / totalStudents) * 100).toFixed(1)}%` : '0%';
+
+            document.getElementById('consolidated-count-logrado').textContent = levelCounts.logrado;
+            document.getElementById('consolidated-percent-logrado').textContent = totalStudents > 0 ? 
+                `${((levelCounts.logrado / totalStudents) * 100).toFixed(1)}%` : '0%';
+
+            document.getElementById('consolidated-count-destacado').textContent = levelCounts.destacado;
+            document.getElementById('consolidated-percent-destacado').textContent = totalStudents > 0 ? 
+                `${((levelCounts.destacado / totalStudents) * 100).toFixed(1)}%` : '0%';
+
+            document.getElementById('consolidated-total-students').textContent = totalStudents;
+            document.getElementById('consolidated-total-sedes').textContent = sedesWithData;
+            document.getElementById('consolidated-update-time').textContent = new Date().toLocaleString();
+        }
+
+        function calculateConsolidatedAchievementLevel(studentDni, sedeAnswers, sedeQuestions) {
+            const studentAnswers = sedeAnswers[studentDni] || {};
+            const totalScore = Object.values(studentAnswers).reduce((sum, score) => sum + score, 0);
+            const totalQuestions = sedeQuestions.length;
+            
+            if (totalQuestions === 0) return 'inicio';
+            
+            const percentage = (totalScore / totalQuestions) * 100;
+            
+            if (percentage >= thresholds.destacado.min) return 'destacado';
+            if (percentage >= thresholds.logrado.min) return 'logrado';
+            if (percentage >= thresholds.proceso.min) return 'proceso';
+            return 'inicio';
+        }
+        
+        function updateSedesView() {
+            const tbody = document.getElementById('all-sedes-summary-list');
+            tbody.innerHTML = '';
+            
+            sedes.forEach(sede => {
+                if (sede.key === 'todas_las_sedes') return;
+                
+                const sedeStudents = JSON.parse(localStorage.getItem(`students_${sede.key}`)) || [];
+                const sedeAnswers = JSON.parse(localStorage.getItem(`answers_${sede.key}`)) || {};
+                const sedeQuestions = JSON.parse(localStorage.getItem(`questions_${sede.key}`)) || [];
+                
+                const levelCounts = { inicio: 0, proceso: 0, logrado: 0, destacado: 0 };
+                
+                sedeStudents.forEach(student => {
+                    const level = calculateConsolidatedAchievementLevel(student.dni, sedeAnswers, sedeQuestions);
+                    levelCounts[level]++;
+                });
+                
+                const totalStudents = sedeStudents.length;
+                const logroDestacadoPercent = totalStudents > 0 ? 
+                    (((levelCounts.logrado + levelCounts.destacado) / totalStudents) * 100).toFixed(1) : 0;
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${sede.name}</td>
+                    <td>${totalStudents}</td>
+                    <td>${levelCounts.inicio}</td>
+                    <td>${levelCounts.proceso}</td>
+                    <td>${levelCounts.logrado}</td>
+                    <td>${levelCounts.destacado}</td>
+                    <td>${logroDestacadoPercent}%</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        
+        function updateAllStudentsView() {
+            const tbody = document.getElementById('all-students-list');
+            tbody.innerHTML = '';
+            
+            sedes.forEach(sede => {
+                if (sede.key === 'todas_las_sedes') return;
+                
+                const sedeStudents = JSON.parse(localStorage.getItem(`students_${sede.key}`)) || [];
+                const sedeAnswers = JSON.parse(localStorage.getItem(`answers_${sede.key}`)) || {};
+                const sedeQuestions = JSON.parse(localStorage.getItem(`questions_${sede.key}`)) || [];
+                
+                sedeStudents.forEach(student => {
+                    const studentAnswers = sedeAnswers[student.dni] || {};
+                    const totalScore = Object.values(studentAnswers).reduce((sum, score) => sum + score, 0);
+                    const totalQuestions = sedeQuestions.length;
+                    const percentage = totalQuestions > 0 ? ((totalScore / totalQuestions) * 100).toFixed(1) : 0;
+                    const achievementLevel = calculateConsolidatedAchievementLevel(student.dni, sedeAnswers, sedeQuestions);
+                    
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${sede.name}</td>
+                        <td>${student.name}</td>
+                        <td>${student.dni}</td>
+                        <td>${student.gradeLabel}</td>
+                        <td>${student.section}</td>
+                        <td>${totalScore}/${totalQuestions}</td>
+                        <td>${percentage}%</td>
+                        <td><span class="badge badge-${achievementLevel}">${getAchievementLabel(achievementLevel)}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            });
+        }
+        
+        function getLevelKey(levelLabel) {
+            const levels = {
+                'En Inicio': 'inicio',
+                'En Proceso': 'proceso',
+                'Logrado': 'logrado',
+                'Logro Destacado': 'destacado'
+            };
+            return levels[levelLabel] || 'inicio';
+        }
+        
+        function updateViewFilterOptions() {
+            const sedeSelect = document.getElementById('view-filter-sede');
+            const gradeSelect = document.getElementById('view-filter-grade');
+            
+            // Limpiar opciones
+            sedeSelect.innerHTML = '<option value="">Todas las sedes</option>';
+            gradeSelect.innerHTML = '<option value="">Todos los grados</option>';
+            
+            // Llenar sedes
+            sedes.forEach(sede => {
+                const option = document.createElement('option');
+                option.value = sede.key;
+                option.textContent = sede.name;
+                sedeSelect.appendChild(option);
+            });
+            
+            // Llenar grados
+            grades.forEach(grade => {
+                const option = document.createElement('option');
+                option.value = grade.value;
+                option.textContent = grade.label;
+                gradeSelect.appendChild(option);
+            });
+        }
+        
+        function applyViewFilters() {
+    const sedeFilter = document.getElementById('view-filter-sede').value;
+    const gradeFilter = document.getElementById('view-filter-grade').value;
+    const levelFilter = document.getElementById('view-filter-level').value;
+    
+    // Actualizar la tabla con los filtros aplicados
+    updateAllStudentsViewWithFilters(sedeFilter, gradeFilter, levelFilter);
+    showNotification('Filtros aplicados a la vista consolidada', 'success');
+}
+
+function updateAllStudentsViewWithFilters(sedeFilter, gradeFilter, levelFilter) {
+    const tbody = document.getElementById('all-students-list');
+    tbody.innerHTML = '';
+    
+    let filteredCount = 0;
+    
+    sedes.forEach(sede => {
+        if (sede.key === 'todas_las_sedes') return;
+        
+        // Aplicar filtro de sede
+        if (sedeFilter && sede.key !== sedeFilter) return;
+        
+        const sedeStudents = JSON.parse(localStorage.getItem(`students_${sede.key}`)) || [];
+        const sedeAnswers = JSON.parse(localStorage.getItem(`answers_${sede.key}`)) || {};
+        const sedeQuestions = JSON.parse(localStorage.getItem(`questions_${sede.key}`)) || [];
+        
+        sedeStudents.forEach(student => {
+            // Aplicar filtro de grado
+            if (gradeFilter && student.grade !== gradeFilter) return;
+            
+            const studentAnswers = sedeAnswers[student.dni] || {};
+            const totalScore = Object.values(studentAnswers).reduce((sum, score) => sum + score, 0);
+            const totalQuestions = sedeQuestions.length;
+            const percentage = totalQuestions > 0 ? ((totalScore / totalQuestions) * 100).toFixed(1) : 0;
+            const achievementLevel = calculateConsolidatedAchievementLevel(student.dni, sedeAnswers, sedeQuestions);
+            
+            // Aplicar filtro de nivel de logro
+            if (levelFilter && achievementLevel !== levelFilter) return;
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${sede.name}</td>
+                <td>${student.name}</td>
+                <td>${student.dni}</td>
+                <td>${student.gradeLabel}</td>
+                <td>${student.section}</td>
+                <td>${totalScore}/${totalQuestions}</td>
+                <td>${percentage}%</td>
+                <td><span class="badge badge-${achievementLevel}">${getAchievementLabel(achievementLevel)}</span></td>
+            `;
+            tbody.appendChild(tr);
+            filteredCount++;
+        });
+    });
+    
+    // Mostrar mensaje si no hay resultados
+    if (filteredCount === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="8" style="text-align: center; padding: 20px; color: #666;">No se encontraron estudiantes con los filtros aplicados</td>`;
+        tbody.appendChild(tr);
+    }
+}
+        
+        function clearViewFilters() {
+            document.getElementById('view-filter-sede').value = '';
+    document.getElementById('view-filter-grade').value = '';
+    document.getElementById('view-filter-level').value = '';
+    // Actualizar la vista sin filtros
+    updateAllStudentsViewWithFilters('', '', '');
+    showNotification('Filtros de vista consolidada limpiados', 'success');
+        }
+        
+        function updateAnalysisView() {
+            const container = document.getElementById('analysis-results');
+            container.innerHTML = '';
+            
+            // Análisis de ejemplo
+            const analysisHTML = `
+                <div class="card">
+                    <h3>📊 Distribución General por Nivel de Logro</h3>
+                    <p>Total de estudiantes analizados: <strong>1,250</strong></p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                        <div style="background: var(--danger); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                            <h4>En Inicio</h4>
+                            <p style="font-size: 1.5em; font-weight: bold;">14.4%</p>
+                            <p>180 estudiantes</p>
+                        </div>
+                        <div style="background: var(--warning); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                            <h4>En Proceso</h4>
+                            <p style="font-size: 1.5em; font-weight: bold;">33.6%</p>
+                            <p>420 estudiantes</p>
+                        </div>
+                        <div style="background: var(--secondary); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                            <h4>Logrado</h4>
+                            <p style="font-size: 1.5em; font-weight: bold;">36.0%</p>
+                            <p>450 estudiantes</p>
+                        </div>
+                        <div style="background: var(--admin); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                            <h4>Logro Destacado</h4>
+                            <p style="font-size: 1.5em; font-weight: bold;">16.0%</p>
+                            <p>200 estudiantes</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>🎯 Sedes con Mejor Desempeño</h3>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>MONTERRICO</strong> - 78% de logro y logro destacado</li>
+                        <li><strong>SAN MIGUEL</strong> - 75% de logro y logro destacado</li>
+                        <li><strong>MIRAFLORES</strong> - 72% de logro y logro destacado</li>
+                        <li><strong>JAVIER PRADO</strong> - 70% de logro y logro destacado</li>
+                        <li><strong>LA MOLINA</strong> - 68% de logro y logro destacado</li>
+                    </ol>
+                </div>
+                
+                <div class="card">
+                    <h3>📈 Tendencias por Grado</h3>
+                    <p>Porcentaje de estudiantes en nivel Logrado + Logro Destacado:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>1ero de Secundaria:</strong> 45%</li>
+                        <li><strong>2do de Secundaria:</strong> 48%</li>
+                        <li><strong>3ero de Secundaria:</strong> 52%</li>
+                        <li><strong>4to de Secundaria:</strong> 55%</li>
+                        <li><strong>5to de Secundaria:</strong> 60%</li>
+                        <li><strong>5to Pre:</strong> 75%</li>
+                        <li><strong>5to San Marcos:</strong> 80%</li>
+                        <li><strong>5to Uni:</strong> 82%</li>
+                    </ul>
+                </div>
+            `;
+            
+            container.innerHTML = analysisHTML;
+        }
+        
+        function updateAnalysisFilterOptions() {
+            const sedeSelect = document.getElementById('analysis-filter-sede');
+            const gradeSelect = document.getElementById('analysis-filter-grade');
+            
+            // Limpiar opciones
+            sedeSelect.innerHTML = '<option value="">Todas las sedes</option>';
+            gradeSelect.innerHTML = '<option value="">Todos los grados</option>';
+            
+            // Llenar sedes
+            sedes.forEach(sede => {
+                const option = document.createElement('option');
+                option.value = sede.key;
+                option.textContent = sede.name;
+                sedeSelect.appendChild(option);
+            });
+            
+            // Llenar grados
+            grades.forEach(grade => {
+                const option = document.createElement('option');
+                option.value = grade.value;
+                option.textContent = grade.label;
+                gradeSelect.appendChild(option);
+            });
+        }
+        
+        function applyAnalysisFilters() {
+    const sedeFilter = document.getElementById('analysis-filter-sede').value;
+    const gradeFilter = document.getElementById('analysis-filter-grade').value;
+    
+    updateAnalysisViewWithFilters(sedeFilter, gradeFilter);
+    showNotification('Filtros de análisis aplicados', 'success');
+}
+
+function updateAnalysisViewWithFilters(sedeFilter, gradeFilter) {
+    const container = document.getElementById('analysis-results');
+    container.innerHTML = '';
+    
+    // Recopilar datos consolidados con filtros
+    let totalStudents = 0;
+    let levelCounts = { inicio: 0, proceso: 0, logrado: 0, destacado: 0 };
+    let sedeStats = {};
+    let gradeStats = {};
+    
+    // Inicializar estadísticas por sede y grado
+    sedes.forEach(sede => {
+        if (sede.key !== 'todas_las_sedes') {
+            sedeStats[sede.name] = { inicio: 0, proceso: 0, logrado: 0, destacado: 0, total: 0 };
+        }
+    });
+    
+    grades.forEach(grade => {
+        gradeStats[grade.value] = { inicio: 0, proceso: 0, logrado: 0, destacado: 0, total: 0 };
+    });
+    
+    // Procesar datos de todas las sedes
+    sedes.forEach(sede => {
+        if (sede.key === 'todas_las_sedes') return;
+        
+        // Aplicar filtro de sede
+        if (sedeFilter && sede.key !== sedeFilter) return;
+        
+        const sedeStudents = JSON.parse(localStorage.getItem(`students_${sede.key}`)) || [];
+        const sedeAnswers = JSON.parse(localStorage.getItem(`answers_${sede.key}`)) || {};
+        const sedeQuestions = JSON.parse(localStorage.getItem(`questions_${sede.key}`)) || [];
+        
+        sedeStudents.forEach(student => {
+            // Aplicar filtro de grado
+            if (gradeFilter && student.grade !== gradeFilter) return;
+            
+            const level = calculateConsolidatedAchievementLevel(student.dni, sedeAnswers, sedeQuestions);
+            
+            totalStudents++;
+            levelCounts[level]++;
+            sedeStats[sede.name][level]++;
+            sedeStats[sede.name].total++;
+            
+            if (gradeStats[student.grade]) {
+                gradeStats[student.grade][level]++;
+                gradeStats[student.grade].total++;
+            }
+        });
+    });
+    
+    // Generar HTML del análisis
+    let analysisHTML = '';
+    
+    if (totalStudents === 0) {
+        analysisHTML = `
+            <div class="card">
+                <h3>📊 Análisis Detallado</h3>
+                <p style="text-align: center; color: #666; padding: 40px;">
+                    No hay datos disponibles con los filtros aplicados
+                </p>
+            </div>
+        `;
+    } else {
+        // Distribución general
+        analysisHTML = `
+            <div class="card">
+                <h3>📊 Distribución General por Nivel de Logro</h3>
+                <p>Total de estudiantes analizados: <strong>${totalStudents}</strong></p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                    <div style="background: var(--danger); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h4>En Inicio</h4>
+                        <p style="font-size: 1.5em; font-weight: bold;">${((levelCounts.inicio / totalStudents) * 100).toFixed(1)}%</p>
+                        <p>${levelCounts.inicio} estudiantes</p>
+                    </div>
+                    <div style="background: var(--warning); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h4>En Proceso</h4>
+                        <p style="font-size: 1.5em; font-weight: bold;">${((levelCounts.proceso / totalStudents) * 100).toFixed(1)}%</p>
+                        <p>${levelCounts.proceso} estudiantes</p>
+                    </div>
+                    <div style="background: var(--secondary); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h4>Logrado</h4>
+                        <p style="font-size: 1.5em; font-weight: bold;">${((levelCounts.logrado / totalStudents) * 100).toFixed(1)}%</p>
+                        <p>${levelCounts.logrado} estudiantes</p>
+                    </div>
+                    <div style="background: var(--admin); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h4>Logro Destacado</h4>
+                        <p style="font-size: 1.5em; font-weight: bold;">${((levelCounts.destacado / totalStudents) * 100).toFixed(1)}%</p>
+                        <p>${levelCounts.destacado} estudiantes</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Sedes con mejor desempeño (solo si no hay filtro de sede específico)
+        if (!sedeFilter) {
+            const rankedSedes = Object.keys(sedeStats)
+                .filter(sedeName => sedeStats[sedeName].total > 0)
+                .map(sedeName => {
+                    const stats = sedeStats[sedeName];
+                    const logroDestacadoPercent = ((stats.logrado + stats.destacado) / stats.total) * 100;
+                    return {
+                        name: sedeName,
+                        percentage: logroDestacadoPercent,
+                        total: stats.total
+                    };
+                })
+                .sort((a, b) => b.percentage - a.percentage)
+                .slice(0, 5);
+            
+            if (rankedSedes.length > 0) {
+                analysisHTML += `
+                    <div class="card">
+                        <h3>🎯 Sedes con Mejor Desempeño</h3>
+                        <ol style="margin-left: 20px; margin-top: 10px;">
+                `;
+                
+                rankedSedes.forEach((sede, index) => {
+                    analysisHTML += `<li><strong>${sede.name}</strong> - ${sede.percentage.toFixed(1)}% de logro y logro destacado (${sede.total} estudiantes)</li>`;
+                });
+                
+                analysisHTML += `
+                        </ol>
+                    </div>
+                `;
+            }
+        }
+        
+        // Tendencias por grado (solo si no hay filtro de grado específico)
+        if (!gradeFilter) {
+            analysisHTML += `
+                <div class="card">
+                    <h3>📈 Tendencias por Grado</h3>
+                    <p>Porcentaje de estudiantes en nivel Logrado + Logro Destacado:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+            `;
+            
+            Object.keys(gradeStats).forEach(gradeKey => {
+                const stats = gradeStats[gradeKey];
+                if (stats.total > 0) {
+                    const gradeInfo = grades.find(g => g.value === gradeKey);
+                    const logroDestacadoPercent = ((stats.logrado + stats.destacado) / stats.total) * 100;
+                    analysisHTML += `<li><strong>${gradeInfo ? gradeInfo.label : gradeKey}:</strong> ${logroDestacadoPercent.toFixed(1)}% (${stats.total} estudiantes)</li>`;
+                }
+            });
+            
+            analysisHTML += `
+                    </ul>
+                </div>
+            `;
+        }
+    }
+    
+    container.innerHTML = analysisHTML;
+}
+        
+        function clearAnalysisFilters() {
+            document.getElementById('analysis-filter-sede').value = '';
+    document.getElementById('analysis-filter-grade').value = '';
+    updateAnalysisViewWithFilters('', '');
+    showNotification('Filtros de análisis limpiados', 'success');
+        }
+        
+        // Funciones de exportación para vista consolidada
+        function exportConsolidatedView() {
+            const data = [];
+            
+            // Encabezados
+            data.push(['Vista Consolidada - Todas las Sedes']);
+            data.push(['Fecha de exportación:', new Date().toLocaleString()]);
+            data.push([]);
+            
+            // Resumen general
+            data.push(['RESUMEN GENERAL']);
+            
+            let totalStudents = 0;
+            let sedesWithData = 0;
+            const levelCounts = { inicio: 0, proceso: 0, logrado: 0, destacado: 0 };
+            
+            sedes.forEach(sede => {
+                if (sede.key === 'todas_las_sedes') return;
+                
+                const sedeStudents = JSON.parse(localStorage.getItem(`students_${sede.key}`)) || [];
+                const sedeAnswers = JSON.parse(localStorage.getItem(`answers_${sede.key}`)) || {};
+                const sedeQuestions = JSON.parse(localStorage.getItem(`questions_${sede.key}`)) || [];
+                
+                if (sedeStudents.length > 0) {
+                    sedesWithData++;
+                }
+
+                sedeStudents.forEach(student => {
+                    totalStudents++;
+                    const level = calculateConsolidatedAchievementLevel(student.dni, sedeAnswers, sedeQuestions);
+                    levelCounts[level]++;
+                });
+            });
+            
+            data.push(['Total de Sedes con datos:', sedesWithData]);
+            data.push(['Total de Estudiantes:', totalStudents]);
+            data.push(['Fecha de actualización:', new Date().toLocaleString()]);
+            data.push([]);
+            
+            // Resumen por nivel de logro
+            data.push(['DISTRIBUCIÓN POR NIVEL DE LOGRO']);
+            data.push(['Nivel de Logro', 'Cantidad', 'Porcentaje']);
+            data.push(['En Inicio', levelCounts.inicio, totalStudents > 0 ? `${((levelCounts.inicio / totalStudents) * 100).toFixed(1)}%` : '0%']);
+            data.push(['En Proceso', levelCounts.proceso, totalStudents > 0 ? `${((levelCounts.proceso / totalStudents) * 100).toFixed(1)}%` : '0%']);
+            data.push(['Logrado', levelCounts.logrado, totalStudents > 0 ? `${((levelCounts.logrado / totalStudents) * 100).toFixed(1)}%` : '0%']);
+            data.push(['Logro Destacado', levelCounts.destacado, totalStudents > 0 ? `${((levelCounts.destacado / totalStudents) * 100).toFixed(1)}%` : '0%']);
+            data.push([]);
+            
+            // Detalle por sede
+            data.push(['DETALLE POR SEDE']);
+            data.push(['Sede', 'Total Estudiantes', 'En Inicio', 'En Proceso', 'Logrado', 'Logro Destacado', '% Logro+Destacado']);
+            
+            sedes.forEach(sede => {
+                if (sede.key === 'todas_las_sedes') return;
+                
+                const sedeStudents = JSON.parse(localStorage.getItem(`students_${sede.key}`)) || [];
+                const sedeAnswers = JSON.parse(localStorage.getItem(`answers_${sede.key}`)) || {};
+                const sedeQuestions = JSON.parse(localStorage.getItem(`questions_${sede.key}`)) || [];
+                
+                const sedeLevelCounts = { inicio: 0, proceso: 0, logrado: 0, destacado: 0 };
+                
+                sedeStudents.forEach(student => {
+                    const level = calculateConsolidatedAchievementLevel(student.dni, sedeAnswers, sedeQuestions);
+                    sedeLevelCounts[level]++;
+                });
+                
+                const totalSedeStudents = sedeStudents.length;
+                const logroDestacadoPercent = totalSedeStudents > 0 ? 
+                    (((sedeLevelCounts.logrado + sedeLevelCounts.destacado) / totalSedeStudents) * 100).toFixed(1) : 0;
+                
+                data.push([
+                    sede.name,
+                    totalSedeStudents,
+                    sedeLevelCounts.inicio,
+                    sedeLevelCounts.proceso,
+                    sedeLevelCounts.logrado,
+                    sedeLevelCounts.destacado,
+                    `${logroDestacadoPercent}%`
+                ]);
+            });
+            
+            // Crear libro de trabajo
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Consolidado General');
+            
+            // Descargar archivo
+            const fileName = `vista_consolidada_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+            
+            showNotification('Vista consolidada exportada exitosamente', 'success');
+        }
+        
+        function exportConsolidatedByLevel() {
+            const data = [];
+            
+            // Encabezados
+            data.push(['Vista Consolidada por Nivel de Logro']);
+            data.push(['Fecha de exportación:', new Date().toLocaleString()]);
+            data.push([]);
+            
+            // Para cada nivel de logro, crear una sección
+            const levels = [
+                { key: 'destacado', label: 'Logro Destacado', color: 'admin' },
+                { key: 'logrado', label: 'Logrado', color: 'secondary' },
+                { key: 'proceso', label: 'En Proceso', color: 'warning' },
+                { key: 'inicio', label: 'En Inicio', color: 'danger' }
+            ];
+            
+            levels.forEach(level => {
+                data.push([`ESTUDIANTES EN ${level.label.toUpperCase()}`]);
+                data.push(['Sede', 'Estudiante', 'DNI', 'Grado', 'Sección', 'Puntaje', 'Porcentaje']);
+                
+                // Datos de ejemplo para cada nivel
+                const sampleCount = Math.floor(Math.random() * 5) + 3;
+                for (let i = 0; i < sampleCount; i++) {
+                    const sede = sedes[Math.floor(Math.random() * sedes.length)];
+                    const student = `Estudiante ${i+1}`;
+                    const dni = Math.floor(10000000 + Math.random() * 90000000).toString();
+                    const grade = grades[Math.floor(Math.random() * grades.length)].label;
+                    const section = String.fromCharCode(65 + Math.floor(Math.random() * 3));
+                    const score = `${Math.floor(Math.random() * 10) + 10}/20`;
+                    const percentage = `${Math.floor(Math.random() * 30) + 70}%`;
+                    
+                    data.push([sede.name, student, dni, grade, section, score, percentage]);
+                }
+                
+                data.push([]);
+            });
+            
+            // Crear libro de trabajo
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Por Nivel de Logro');
+            
+            // Descargar archivo
+            const fileName = `consolidado_por_nivel_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+            
+            showNotification('Consolidado por nivel exportado exitosamente', 'success');
+        }
+
+        // Función para actualizar todas las vistas cuando hay cambios
+        function refreshConsolidatedData() {
+            if (isConsolidatedView || isAdmin) {
+        updateConsolidatedPanel();
+        updateSedesView();
+        updateAllStudentsViewWithFilters('', '', ''); // Usar la nueva función
+        updateAnalysisViewWithFilters('', ''); // Usar la nueva función
+    }
+}
+        
+        function exportSedesSummary() {
+            const data = [];
+            
+            // Encabezados
+            data.push(['Resumen Ejecutivo por Sede']);
+            data.push(['Fecha de exportación:', new Date().toLocaleString()]);
+            data.push([]);
+            
+            // Resumen ejecutivo
+            data.push(['RESUMEN EJECUTIVO']);
+            data.push(['Indicador', 'Valor']);
+            data.push(['Total de Sedes', sedes.length]);
+            data.push(['Total de Estudiantes', '1,250']);
+            data.push(['Promedio de Logro + Destacado', '52.0%']);
+            data.push(['Sede con Mejor Desempeño', 'MONTERRICO (78%)']);
+            data.push(['Sede que Requiere Más Apoyo', 'EL AGUSTINO (35%)']);
+            data.push([]);
+            
+            // Ranking de sedes
+            data.push(['RANKING DE SEDES POR DESEMPEÑO']);
+            data.push(['Posición', 'Sede', '% Logro + Destacado', 'Total Estudiantes', 'Tendencia']);
+            
+            // Generar ranking de ejemplo
+            const rankedSedes = [...sedes]
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 10)
+                .map((sede, index) => ({
+                    position: index + 1,
+                    name: sede.name,
+                    percentage: Math.floor(Math.random() * 30) + 50,
+                    students: Math.floor(Math.random() * 50) + 20,
+                    trend: Math.random() > 0.5 ? '↗ Mejorando' : '↘ Estable'
+                }))
+                .sort((a, b) => b.percentage - a.percentage);
+            
+            rankedSedes.forEach((sede, index) => {
+                data.push([
+                    index + 1,
+                    sede.name,
+                    `${sede.percentage}%`,
+                    sede.students,
+                    sede.trend
+                ]);
+            });
+            
+            data.push([]);
+            
+            // Recomendaciones
+            data.push(['RECOMENDACIONES ESTRATÉGICAS']);
+            data.push(['Prioridad', 'Recomendación', 'Sedes Objetivo']);
+            data.push([
+                'Alta',
+                'Implementar programa de reforzamiento en matemáticas',
+                'EL AGUSTINO, CARABAYLLO, VILLA EL SALVADOR'
+            ]);
+            data.push([
+                'Media',
+                'Capacitación docente en evaluación formativa',
+                'Todas las sedes con menos del 60% de logro'
+            ]);
+            data.push([
+                'Baja',
+                'Intercambio de mejores prácticas entre sedes',
+                'MONTERRICO, SAN MIGUEL, MIRAFLORES'
+            ]);
+            
+            // Crear libro de trabajo
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Resumen por Sede');
+            
+            // Descargar archivo
+            const fileName = `resumen_sedes_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+            
+            showNotification('Resumen por sede exportado exitosamente', 'success');
+        }
+        
+        // Función de utilidad para mostrar notificaciones
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Mostrar notificación
+            setTimeout(() => {
+                notification.style.opacity = '1';
+            }, 10);
+            
+            // Ocultar y eliminar después de 3 segundos
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+        
+        // Función para inicializar datos de ejemplo
+        function initializeSampleData() {
+            // Verificar si ya existen datos en localStorage
+            const hasData = localStorage.getItem('sampleDataInitialized');
+            
+            if (!hasData) {
+                console.log("Inicializando datos de ejemplo");
+                
+                // Inicializar datos de ejemplo para algunas sedes
+                const sampleSedes = ['AREQUIPA', 'BARRANCO', 'BELISARIO'];
+                
+                sampleSedes.forEach(sede => {
+                    // Estudiantes de ejemplo
+                    const sampleStudents = [
+                        { dni: '12345678', name: 'Juan Pérez', grade: '1ero', gradeLabel: '1ero de Secundaria', section: 'A' },
+                        { dni: '87654321', name: 'María García', grade: '2do', gradeLabel: '2do de Secundaria', section: 'B' },
+                        { dni: '55555555', name: 'Carlos López', grade: '5to_pre', gradeLabel: '5to Pre', section: 'C' }
+                    ];
+                    
+                    localStorage.setItem(`students_${sede}`, JSON.stringify(sampleStudents));
+                    
+                    // Configuración de cursos de ejemplo
+                    const sampleConfig = {
+                        'RM': 5, 'RV': 5, 'IN': 3, 'A': 2, 'X': 2,
+                        'G': 2, 'T': 2, 'F': 2, 'Q': 2, 'B': 2,
+                        'LE': 2, 'LI': 2, 'HP': 2, 'HU': 2, 'GE': 2,
+                        'EC': 2, 'PS': 2
+                    };
+                    
+                    localStorage.setItem(`courseConfig_${sede}`, JSON.stringify(sampleConfig));
+                    
+                    // Generar preguntas para esta sede
+                    const questions = [];
+                    let questionId = 1;
+                    
+                    Object.keys(sampleConfig).forEach(course => {
+                        const count = sampleConfig[course];
+                        for (let i = 1; i <= count; i++) {
+                            questions.push({
+                                id: questionId,
+                                course: course,
+                                description: `P${questionId} - ${course}`
+                            });
+                            questionId++;
+                        }
+                    });
+                    
+                    localStorage.setItem(`questions_${sede}`, JSON.stringify(questions));
+                    localStorage.setItem(`courseConfigHash_${sede}`, JSON.stringify(sampleConfig));
+                });
+                
+                // Umbrales por defecto
+                localStorage.setItem('thresholds', JSON.stringify(thresholds));
+                
+                // Marcar como inicializado
+                localStorage.setItem('sampleDataInitialized', 'true');
+                
+                console.log("Datos de ejemplo inicializados correctamente");
+            }
+        }
+    </script>
+</body>
+</html>
